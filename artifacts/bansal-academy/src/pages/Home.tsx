@@ -471,7 +471,7 @@ export default function Home() {
           <div className="container mx-auto px-6 lg:px-16">
             <div className="flex flex-col md:flex-row justify-between gap-10 mb-10">
               <div>
-                <img src={logoPath} alt="The Bansal Academy" className="h-16 w-auto object-contain mb-4" />
+                <img src={logoPath} alt="The Bansal Academy" className="h-16 w-auto object-contain mb-4 brightness-0 invert" />
                 <p className="text-white/60 text-sm max-w-xs leading-relaxed">Elite coaching for Maths & Commerce in Laxmi Nagar, Delhi.</p>
               </div>
               <div className="flex gap-12">
