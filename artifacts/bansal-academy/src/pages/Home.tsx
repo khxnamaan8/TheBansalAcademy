@@ -167,26 +167,15 @@ export default function Home() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
-            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-slate-900"
+            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-white"
           >
-            <motion.div
-              className="bg-slate-800 rounded-2xl px-8 py-6 shadow-2xl"
-              animate={{
-                scale: [1, 1.05, 1],
-                boxShadow: [
-                  "0 0 20px rgba(37,99,235,0.2)",
-                  "0 0 50px rgba(37,99,235,0.5)",
-                  "0 0 20px rgba(37,99,235,0.2)",
-                ],
-              }}
+            <motion.img
+              src={logoPath}
+              alt="The Bansal Academy"
+              className="h-32 w-auto object-contain"
+              animate={{ scale: [1, 1.06, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <img
-                src={logoPath}
-                alt="The Bansal Academy"
-                className="h-28 w-auto object-contain"
-              />
-            </motion.div>
+            />
             <motion.div
               className="mt-6 h-1 w-32 rounded-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%]"
               animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
@@ -246,17 +235,6 @@ export default function Home() {
                 <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-yellow-300 shadow-sm mb-8 backdrop-blur-sm">
                   <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
                   <span className="text-sm font-bold text-foreground/80">5.0 Rating | 200+ Reviews</span>
-                </motion.div>
-
-                {/* Logo in hero — big and visible */}
-                <motion.div variants={fadeInUp} className="mb-6 inline-block">
-                  <div className="bg-slate-900 rounded-2xl px-4 py-3 shadow-lg inline-block">
-                    <img
-                      src={logoPath}
-                      alt="The Bansal Academy"
-                      className="h-16 md:h-20 w-auto object-contain"
-                    />
-                  </div>
                 </motion.div>
 
                 <motion.h1

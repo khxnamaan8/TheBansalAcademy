@@ -48,13 +48,11 @@ export function Navbar() {
                 className="flex items-center gap-2 cursor-pointer"
                 whileHover={{ scale: 1.02 }}
               >
-                <div className="bg-slate-900 rounded-xl px-2.5 py-1.5 shadow-md">
-                  <img
-                    src={logoPath}
-                    alt="The Bansal Academy"
-                    className="h-9 md:h-11 w-auto object-contain"
-                  />
-                </div>
+                <img
+                  src={logoPath}
+                  alt="The Bansal Academy"
+                  className="h-12 md:h-14 w-auto object-contain"
+                />
               </motion.div>
             </Link>
 

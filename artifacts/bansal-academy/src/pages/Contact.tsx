@@ -16,9 +16,7 @@ export default function Contact() {
         <div className="container mx-auto px-6 lg:px-16 relative z-10 text-center max-w-3xl mx-auto">
           <motion.div initial="hidden" animate="visible" variants={stagger}>
             <motion.div variants={fade} className="mb-8 flex justify-center">
-              <div className="bg-slate-900 rounded-2xl px-6 py-4 shadow-xl inline-block">
-                <img src={logoPath} alt="The Bansal Academy" className="h-16 w-auto object-contain" />
-              </div>
+              <img src={logoPath} alt="The Bansal Academy" className="h-22 w-auto object-contain" />
             </motion.div>
             <motion.h1 variants={fade} className="text-4xl md:text-6xl font-black mb-5 tracking-tight">
               Get In <span className="text-gradient-blue">Touch</span>
