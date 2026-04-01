@@ -146,16 +146,6 @@ export default function Home() {
     return () => clearTimeout(t);
   }, []);
 
-  const reviews = [
-    { t: "Kind faculties, great infrastructure. My child's grades improved drastically!", n: "Priya Sharma", r: "Parent" },
-    { t: "Best coaching for class 10 in Laxmi Nagar. Highly recommend!", n: "Rahul Verma", r: "Student" },
-    { t: "Concept clarity improved a lot after joining. Faculty explains everything patiently.", n: "Anjali Singh", r: "Class 10" },
-    { t: "My daughter scored 95% in Maths after joining. Amazing results!", n: "Suresh Kumar", r: "Parent" },
-    { t: "CUET preparation was excellent. Got admission in my dream college!", n: "Neha Gupta", r: "CUET Student" },
-    { t: "Kind faculties, great infrastructure. My child's grades improved drastically!", n: "Priya Sharma", r: "Parent" },
-    { t: "Best coaching for class 10 in Laxmi Nagar. Highly recommend!", n: "Rahul Verma", r: "Student" },
-    { t: "Concept clarity improved a lot after joining. Faculty explains everything patiently.", n: "Anjali Singh", r: "Class 10" },
-  ];
 
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -391,44 +381,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ─── REVIEWS STRIP ─── */}
-        <section className="py-20 bg-background overflow-hidden">
-          <div className="container mx-auto px-6 lg:px-16 mb-10 text-center">
-            <h2 className="text-3xl md:text-4xl font-black mb-3">What Students <span className="text-gradient-blue">Say</span></h2>
-            <p className="text-muted-foreground">Real feedback from our students & parents in Laxmi Nagar.</p>
-          </div>
-          <div className="relative flex overflow-hidden group">
-            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-            <div className="animate-scroll-marquee flex gap-6 px-4 group-hover:[animation-play-state:paused]">
-              {reviews.map((r, i) => (
-                <div key={i} className="w-[380px] flex-shrink-0 p-7 rounded-2xl bg-white border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex gap-1 mb-4">
-                    {[1,2,3,4,5].map(s => <Star key={s} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
-                  </div>
-                  <p className="text-foreground/80 italic mb-5 text-sm leading-relaxed">"{r.t}"</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
-                      {r.n.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm">{r.n}</p>
-                      <p className="text-xs text-primary font-semibold uppercase tracking-wide">{r.r}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="text-center mt-10">
-            <Link href="/reviews">
-              <motion.button whileHover={{ scale: 1.04 }} className="px-8 py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">
-                Read All Reviews
-              </motion.button>
-            </Link>
-          </div>
-        </section>
-
         {/* ─── CONTACT CTA ─── */}
         <section className="py-20 hero-bg relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
@@ -483,7 +435,6 @@ export default function Home() {
                       { l: "About", h: "/about" },
                       { l: "Courses", h: "/courses" },
                       { l: "Why Us", h: "/why-us" },
-                      { l: "Reviews", h: "/reviews" },
                       { l: "Contact", h: "/contact" },
                     ].map(item => (
                       <Link key={item.h} href={item.h}>
