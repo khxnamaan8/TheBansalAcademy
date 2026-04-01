@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export function ThreeBackground() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -7,165 +7,211 @@ export function ThreeBackground() {
     if (!mountRef.current) return;
 
     let renderer: any = null;
-    let animationFrameId: number;
+    let animationId: number;
 
     const init = async () => {
       try {
-        const THREE = await import('three');
-
+        const THREE = await import("three");
         if (!mountRef.current) return;
 
-        // Scene setup
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x0a0a0a, 0.0015);
-
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(
+          60,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        camera.position.z = 8;
 
         renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
         mountRef.current.appendChild(renderer.domElement);
 
-        // Particle field
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 2000;
-        const posArray = new Float32Array(particlesCount * 3);
-
-        for (let i = 0; i < particlesCount * 3; i++) {
-          posArray[i] = (Math.random() - 0.5) * 25;
+        // === PARTICLES ===
+        const particleCount = 1800;
+        const positions = new Float32Array(particleCount * 3);
+        const sizes = new Float32Array(particleCount);
+        for (let i = 0; i < particleCount; i++) {
+          positions[i * 3] = (Math.random() - 0.5) * 30;
+          positions[i * 3 + 1] = (Math.random() - 0.5) * 30;
+          positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+          sizes[i] = Math.random() * 0.04 + 0.01;
         }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const material = new THREE.PointsMaterial({
-          size: 0.02,
-          color: 0x22D3EE,
+        const pGeo = new THREE.BufferGeometry();
+        pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        const pMat = new THREE.PointsMaterial({
+          size: 0.04,
+          color: 0x2563eb,
           transparent: true,
-          opacity: 0.6,
-          blending: THREE.AdditiveBlending
+          opacity: 0.45,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
         });
+        const particles = new THREE.Points(pGeo, pMat);
+        scene.add(particles);
 
-        const particlesMesh = new THREE.Points(particlesGeometry, material);
-        scene.add(particlesMesh);
+        // Second particle layer — cyan
+        const positions2 = new Float32Array(800 * 3);
+        for (let i = 0; i < 800; i++) {
+          positions2[i * 3] = (Math.random() - 0.5) * 25;
+          positions2[i * 3 + 1] = (Math.random() - 0.5) * 25;
+          positions2[i * 3 + 2] = (Math.random() - 0.5) * 15;
+        }
+        const pGeo2 = new THREE.BufferGeometry();
+        pGeo2.setAttribute("position", new THREE.BufferAttribute(positions2, 3));
+        const pMat2 = new THREE.PointsMaterial({
+          size: 0.03,
+          color: 0x0ea5e9,
+          transparent: true,
+          opacity: 0.3,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        });
+        const particles2 = new THREE.Points(pGeo2, pMat2);
+        scene.add(particles2);
 
-        // Abstract geometries
-        const group = new THREE.Group();
-        scene.add(group);
+        // === FLOATING 3D SHAPES ===
+        const shapesGroup = new THREE.Group();
+        scene.add(shapesGroup);
 
-        const geometries = [
-          new THREE.IcosahedronGeometry(0.5, 0),
-          new THREE.OctahedronGeometry(0.4, 0),
-          new THREE.TetrahedronGeometry(0.6, 0),
-          new THREE.TorusGeometry(0.5, 0.02, 16, 100)
+        const shapeConfigs = [
+          { geo: new THREE.IcosahedronGeometry(0.55, 1), color: 0x2563eb, opacity: 0.15 },
+          { geo: new THREE.OctahedronGeometry(0.45, 0), color: 0x0ea5e9, opacity: 0.18 },
+          { geo: new THREE.TetrahedronGeometry(0.65, 0), color: 0x7c3aed, opacity: 0.12 },
+          { geo: new THREE.TorusGeometry(0.55, 0.06, 12, 60), color: 0x2563eb, opacity: 0.2 },
+          { geo: new THREE.TorusKnotGeometry(0.4, 0.1, 80, 12), color: 0x0ea5e9, opacity: 0.12 },
+          { geo: new THREE.DodecahedronGeometry(0.5, 0), color: 0x7c3aed, opacity: 0.14 },
         ];
 
-        const mats = [
-          new THREE.MeshBasicMaterial({ color: 0x1E3A8A, wireframe: true, transparent: true, opacity: 0.2 }),
-          new THREE.MeshBasicMaterial({ color: 0x2563EB, wireframe: true, transparent: true, opacity: 0.3 }),
-          new THREE.MeshBasicMaterial({ color: 0x22D3EE, wireframe: true, transparent: true, opacity: 0.4 }),
-          new THREE.MeshBasicMaterial({ color: 0xA78BFA, wireframe: true, transparent: true, opacity: 0.3 }),
-        ];
-
-        for (let i = 0; i < 30; i++) {
-          const geo = geometries[Math.floor(Math.random() * geometries.length)];
-          const mat = mats[Math.floor(Math.random() * mats.length)];
-          const mesh = new THREE.Mesh(geo, mat);
-
-          mesh.position.x = (Math.random() - 0.5) * 20;
-          mesh.position.y = (Math.random() - 0.5) * 20;
-          mesh.position.z = (Math.random() - 0.5) * 15;
-          mesh.rotation.x = Math.random() * Math.PI;
-          mesh.rotation.y = Math.random() * Math.PI;
-
-          const scale = Math.random() * 0.5 + 0.3;
-          mesh.scale.set(scale, scale, scale);
-          group.add(mesh);
+        for (let i = 0; i < 28; i++) {
+          const cfg = shapeConfigs[i % shapeConfigs.length];
+          const mat = new THREE.MeshBasicMaterial({
+            color: cfg.color,
+            wireframe: true,
+            transparent: true,
+            opacity: cfg.opacity,
+          });
+          const mesh = new THREE.Mesh(cfg.geo, mat);
+          mesh.position.set(
+            (Math.random() - 0.5) * 22,
+            (Math.random() - 0.5) * 22,
+            (Math.random() - 0.5) * 12
+          );
+          mesh.rotation.set(
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            Math.random() * Math.PI
+          );
+          const s = Math.random() * 0.6 + 0.3;
+          mesh.scale.set(s, s, s);
+          shapesGroup.add(mesh);
         }
 
-        camera.position.z = 5;
+        // === CONNECTING LINES (grid-like depth lines) ===
+        const linesMat = new THREE.LineBasicMaterial({
+          color: 0x2563eb,
+          transparent: true,
+          opacity: 0.06,
+        });
+        for (let i = 0; i < 12; i++) {
+          const pts = [];
+          for (let j = 0; j < 6; j++) {
+            pts.push(new THREE.Vector3(
+              (Math.random() - 0.5) * 20,
+              (Math.random() - 0.5) * 20,
+              (Math.random() - 0.5) * 10
+            ));
+          }
+          const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+          const line = new THREE.Line(lineGeo, linesMat);
+          scene.add(line);
+        }
 
-        let mouseX = 0;
-        let mouseY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
+        // === MOUSE PARALLAX ===
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
 
-        const onMouseMove = (event: MouseEvent) => {
-          mouseX = (event.clientX - windowHalfX) * 0.0005;
-          mouseY = (event.clientY - windowHalfY) * 0.0005;
+        const onMouseMove = (e: MouseEvent) => {
+          targetX = ((e.clientX / window.innerWidth) - 0.5) * 2;
+          targetY = -((e.clientY / window.innerHeight) - 0.5) * 2;
         };
+        document.addEventListener("mousemove", onMouseMove);
 
-        document.addEventListener('mousemove', onMouseMove);
+        // === RESIZE ===
+        const onResize = () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        };
+        window.addEventListener("resize", onResize);
 
-        let elapsedTime = 0;
-        let lastTime = performance.now();
+        let t = 0;
 
         const animate = () => {
-          animationFrameId = requestAnimationFrame(animate);
+          animationId = requestAnimationFrame(animate);
+          t += 0.004;
 
-          const now = performance.now();
-          elapsedTime += (now - lastTime) / 1000;
-          lastTime = now;
+          // Smooth mouse parallax
+          currentX += (targetX - currentX) * 0.04;
+          currentY += (targetY - currentY) * 0.04;
 
-          particlesMesh.rotation.y = elapsedTime * 0.02;
-          particlesMesh.rotation.x = elapsedTime * 0.01;
+          camera.position.x = currentX * 1.5;
+          camera.position.y = currentY * 1.2;
+          camera.lookAt(0, 0, 0);
 
-          group.rotation.x += 0.0005;
-          group.rotation.y += 0.001;
+          // Rotate particles
+          particles.rotation.y = t * 0.018;
+          particles.rotation.x = t * 0.009;
+          particles2.rotation.y = -t * 0.014;
+          particles2.rotation.z = t * 0.007;
 
-          group.children.forEach((child, i) => {
-            child.rotation.x += 0.001 * (i % 2 === 0 ? 1 : -1);
-            child.rotation.y += 0.002 * (i % 3 === 0 ? 1 : -1);
-            child.position.y += Math.sin(elapsedTime * 0.5 + i) * 0.002;
+          // Rotate shapes group
+          shapesGroup.rotation.y = t * 0.008;
+          shapesGroup.rotation.x = t * 0.004;
+
+          // Animate individual shapes with floating
+          shapesGroup.children.forEach((child, i) => {
+            child.rotation.x += 0.003 * (i % 2 === 0 ? 1 : -1);
+            child.rotation.y += 0.005 * (i % 3 === 0 ? 1 : -1);
+            child.position.y += Math.sin(t * 0.8 + i * 0.7) * 0.003;
+            child.position.x += Math.cos(t * 0.5 + i * 0.4) * 0.002;
           });
-
-          camera.position.x += (mouseX * 5 - camera.position.x) * 0.02;
-          camera.position.y += (-mouseY * 5 - camera.position.y) * 0.02;
-          camera.lookAt(scene.position);
 
           renderer.render(scene, camera);
         };
 
         animate();
 
-        const handleResize = () => {
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
-          renderer.setSize(window.innerWidth, window.innerHeight);
-        };
-
-        window.addEventListener('resize', handleResize);
-
         return () => {
-          window.removeEventListener('resize', handleResize);
-          document.removeEventListener('mousemove', onMouseMove);
-          cancelAnimationFrame(animationFrameId);
-          if (mountRef.current && renderer.domElement && mountRef.current.contains(renderer.domElement)) {
+          window.removeEventListener("resize", onResize);
+          document.removeEventListener("mousemove", onMouseMove);
+          cancelAnimationFrame(animationId);
+          if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
             mountRef.current.removeChild(renderer.domElement);
           }
           scene.clear();
           renderer.dispose();
         };
       } catch {
-        // WebGL not available — CSS fallback background handles the visuals
+        // WebGL not available — CSS fallback
       }
     };
 
-    const cleanup = init();
-
+    const cleanupPromise = init();
     return () => {
-      cleanup.then(fn => fn && fn());
-      cancelAnimationFrame(animationFrameId);
-      if (renderer) {
-        try { renderer.dispose(); } catch { }
-      }
+      cleanupPromise.then((fn) => fn?.());
     };
   }, []);
 
   return (
     <div
       ref={mountRef}
-      className="absolute inset-0 -z-10 overflow-hidden"
-      style={{ pointerEvents: 'none' }}
+      className="absolute inset-0 pointer-events-none"
+      style={{ zIndex: 0 }}
     />
   );
 }

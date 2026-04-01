@@ -1,0 +1,142 @@
+import { motion } from "framer-motion";
+import { Link } from "wouter";
+import { BrainCircuit, Users, GraduationCap, Target, CheckCircle2, Award, BookOpen, Heart } from "lucide-react";
+import logoPath from "@assets/Bansal-Academy-Logo_1775023861712.png";
+
+const fade = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
+
+export default function About() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Hero */}
+      <section className="relative pt-32 pb-20 hero-bg overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 left-1/4 w-80 h-80 rounded-full bg-blue-400/10 blur-[80px] animate-float-slow" />
+          <div className="absolute bottom-1/4 right-1/4 w-60 h-60 rounded-full bg-violet-400/10 blur-[60px] animate-float-slow" style={{ animationDelay: "2s" }} />
+        </div>
+        <div className="container mx-auto px-6 lg:px-16 relative z-10">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="text-center max-w-3xl mx-auto">
+            <motion.img variants={fade} src={logoPath} alt="The Bansal Academy" className="h-24 w-auto object-contain mx-auto mb-8 drop-shadow-lg" />
+            <motion.h1 variants={fade} className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
+              About <span className="text-gradient-blue">The Bansal Academy</span>
+            </motion.h1>
+            <motion.p variants={fade} className="text-xl text-muted-foreground leading-relaxed">
+              A premier coaching institute in Laxmi Nagar, Delhi dedicated to transforming students through deep conceptual clarity, personalized guidance, and unwavering commitment to excellence.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Mission */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-6 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+              <h2 className="text-3xl md:text-4xl font-black mb-6 tracking-tight">Our <span className="text-gradient-blue">Mission</span></h2>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                We bridge the gap between hard work and smart work. Our methodologies are engineered to build problem-solving muscle, critical thinking, and academic confidence — not just exam scores.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Located in the heart of Laxmi Nagar, we have built a reputation for producing students who don't just pass exams — they understand subjects deeply and carry that knowledge for life.
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
+              className="grid grid-cols-2 gap-4"
+            >
+              {[
+                { icon: Award, label: "Top Results", val: "95%+", color: "bg-yellow-50 text-yellow-600 border-yellow-200" },
+                { icon: Users, label: "Students Taught", val: "200+", color: "bg-blue-50 text-blue-600 border-blue-200" },
+                { icon: Heart, label: "Parent Satisfaction", val: "100%", color: "bg-pink-50 text-pink-600 border-pink-200" },
+                { icon: BookOpen, label: "Courses Offered", val: "4+", color: "bg-green-50 text-green-600 border-green-200" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, type: "spring" }}
+                  whileHover={{ y: -4, boxShadow: "0 12px 30px rgba(0,0,0,0.08)" }}
+                  className={`p-6 rounded-2xl bg-white border-2 ${stat.color.split(' ')[2]} shadow-sm text-center`}
+                >
+                  <div className={`w-12 h-12 rounded-xl ${stat.color.split(' ')[0]} ${stat.color.split(' ')[1]} flex items-center justify-center mx-auto mb-3`}>
+                    <stat.icon className="w-6 h-6" />
+                  </div>
+                  <p className="text-2xl font-black text-foreground">{stat.val}</p>
+                  <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mt-1">{stat.label}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Core Values */}
+      <section className="py-20 section-alt">
+        <div className="container mx-auto px-6 lg:px-16">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-14">
+            <motion.h2 variants={fade} className="text-3xl md:text-5xl font-black mb-4">Our Core <span className="text-gradient-blue">Values</span></motion.h2>
+            <motion.p variants={fade} className="text-muted-foreground text-lg max-w-xl mx-auto">What makes The Bansal Academy the first choice for students and parents in Laxmi Nagar.</motion.p>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: BrainCircuit, title: "Concept-Based Learning", desc: "True mastery, not surface knowledge. Every concept is broken down until it clicks.", color: "bg-blue-50 text-blue-600" },
+              { icon: Users, title: "Personalized Attention", desc: "Small batches ensure every student is seen, heard, and supported at every step.", color: "bg-green-50 text-green-600" },
+              { icon: GraduationCap, title: "Expert Faculty", desc: "Experienced educators who are passionate about teaching and student growth.", color: "bg-violet-50 text-violet-600" },
+              { icon: Target, title: "Goal-Oriented", desc: "Every session, every doubt session, every test — all focused on your goal.", color: "bg-orange-50 text-orange-600" },
+            ].map((v, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                transition={{ delay: i * 0.1, type: "spring" }}
+                whileHover={{ y: -6 }}
+                className="p-7 rounded-2xl bg-white border border-border shadow-sm hover:shadow-lg transition-all"
+              >
+                <div className={`w-14 h-14 rounded-2xl ${v.color} flex items-center justify-center mb-5`}>
+                  <v.icon className="w-7 h-7" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">{v.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{v.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 bg-primary text-white text-center">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-black mb-4">Ready to Join The Academy?</h2>
+          <p className="text-blue-100 mb-8 max-w-md mx-auto">Book your free demo session and experience the difference firsthand.</p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link href="/contact">
+              <motion.button
+                whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.95)" }}
+                whileTap={{ scale: 0.97 }}
+                className="px-8 py-3 rounded-xl bg-white text-primary font-bold shadow-lg transition-all"
+              >
+                Book Free Demo
+              </motion.button>
+            </Link>
+            <Link href="/courses">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                className="px-8 py-3 rounded-xl border-2 border-white/40 text-white font-bold hover:bg-white/10 transition-all"
+              >
+                View Courses
+              </motion.button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-foreground text-white py-8 text-center text-sm text-white/40">
+        <p>&copy; {new Date().getFullYear()} The Bansal Academy. All rights reserved. | Laxmi Nagar, Delhi</p>
+      </footer>
+    </div>
+  );
+}

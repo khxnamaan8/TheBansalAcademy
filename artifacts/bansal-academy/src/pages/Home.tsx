@@ -1,554 +1,536 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
+import { Link } from "wouter";
 import { ThreeBackground } from "@/components/ThreeBackground";
-import { Calculator, Users, Star, GraduationCap, ChevronRight, Phone, MessageCircle, MapPin, Sparkles, BrainCircuit, Target, CheckCircle2 } from "lucide-react";
-import logoPath from "@assets/Bansal-Academy-Logo_1775023861712.png";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Star, Phone, ChevronRight, Calculator, GraduationCap, Target, Sparkles, Users, BrainCircuit, CheckCircle2, MessageCircle } from "lucide-react";
+import logoPath from "@assets/Bansal-Academy-Logo_1775023861712.png";
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  hidden: { opacity: 0, y: 35 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+const stagger = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
 };
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2
-    }
-  }
-};
+// Hero flip cards
+const flipCards = [
+  {
+    front: {
+      icon: <Star className="w-10 h-10 text-yellow-500 fill-yellow-400" />,
+      title: "5.0 Rating",
+      subtitle: "200+ Happy Students",
+      color: "from-yellow-50 to-amber-50",
+      border: "border-yellow-200",
+    },
+    back: {
+      icon: <GraduationCap className="w-10 h-10 text-blue-600" />,
+      title: "Top Results",
+      subtitle: "95%+ in Board Exams",
+      color: "from-blue-50 to-indigo-50",
+      border: "border-blue-200",
+    },
+  },
+  {
+    front: {
+      icon: <Users className="w-10 h-10 text-green-600" />,
+      title: "Small Batches",
+      subtitle: "Personalized Attention",
+      color: "from-green-50 to-emerald-50",
+      border: "border-green-200",
+    },
+    back: {
+      icon: <BrainCircuit className="w-10 h-10 text-purple-600" />,
+      title: "Concept-First",
+      subtitle: "Deep Understanding",
+      color: "from-purple-50 to-violet-50",
+      border: "border-purple-200",
+    },
+  },
+  {
+    front: {
+      icon: <Calculator className="w-10 h-10 text-blue-600" />,
+      title: "Maths & Science",
+      subtitle: "Class 9 & 10",
+      color: "from-sky-50 to-blue-50",
+      border: "border-sky-200",
+    },
+    back: {
+      icon: <Sparkles className="w-10 h-10 text-orange-500" />,
+      title: "CUET Ready",
+      subtitle: "Top Delhi Colleges",
+      color: "from-orange-50 to-amber-50",
+      border: "border-orange-200",
+    },
+  },
+  {
+    front: {
+      icon: <Target className="w-10 h-10 text-red-500" />,
+      title: "Commerce",
+      subtitle: "Accounts & Economics",
+      color: "from-red-50 to-rose-50",
+      border: "border-red-200",
+    },
+    back: {
+      icon: <CheckCircle2 className="w-10 h-10 text-teal-600" />,
+      title: "Doubt Sessions",
+      subtitle: "Never Miss a Concept",
+      color: "from-teal-50 to-cyan-50",
+      border: "border-teal-200",
+    },
+  },
+];
+
+function HeroCardFlipper() {
+  const [flipped, setFlipped] = useState([false, false, false, false]);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const indexRef = useRef(0);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      const idx = indexRef.current % flipCards.length;
+      setFlipped((prev) => {
+        const next = [...prev];
+        next[idx] = !next[idx];
+        return next;
+      });
+      indexRef.current++;
+    }, 2000);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, []);
+
+  return (
+    <div className="grid grid-cols-2 gap-4 w-full max-w-sm mx-auto">
+      {flipCards.map((card, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 30, rotateY: -10 }}
+          animate={{ opacity: 1, y: 0, rotateY: 0 }}
+          transition={{ delay: 0.4 + i * 0.15, type: "spring", bounce: 0.4 }}
+          className="card-flip-container h-40 cursor-pointer"
+          onClick={() => setFlipped((prev) => { const n = [...prev]; n[i] = !n[i]; return n; })}
+        >
+          <div className={`card-flip-inner ${flipped[i] ? "flipped" : ""} w-full h-full`}>
+            {/* FRONT */}
+            <div
+              className={`card-flip-front rounded-2xl border-2 ${card.front.border} bg-gradient-to-br ${card.front.color} shadow-md flex flex-col items-center justify-center p-4 gap-2`}
+            >
+              {card.front.icon}
+              <p className="font-black text-foreground text-sm text-center leading-tight">{card.front.title}</p>
+              <p className="text-muted-foreground text-xs text-center font-medium">{card.front.subtitle}</p>
+            </div>
+            {/* BACK */}
+            <div
+              className={`card-flip-back rounded-2xl border-2 ${card.back.border} bg-gradient-to-br ${card.back.color} shadow-md flex flex-col items-center justify-center p-4 gap-2`}
+            >
+              {card.back.icon}
+              <p className="font-black text-foreground text-sm text-center leading-tight">{card.back.title}</p>
+              <p className="text-muted-foreground text-xs text-center font-medium">{card.back.subtitle}</p>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
   useEffect(() => {
-    // Preloader timeout
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("scroll", handleScroll);
-    };
+    const t = setTimeout(() => setLoading(false), 1800);
+    return () => clearTimeout(t);
   }, []);
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const reviews = [
+    { t: "Kind faculties, great infrastructure. My child's grades improved drastically!", n: "Priya Sharma", r: "Parent" },
+    { t: "Best coaching for class 10 in Laxmi Nagar. Highly recommend!", n: "Rahul Verma", r: "Student" },
+    { t: "Concept clarity improved a lot after joining. Faculty explains everything patiently.", n: "Anjali Singh", r: "Class 10" },
+    { t: "My daughter scored 95% in Maths after joining. Amazing results!", n: "Suresh Kumar", r: "Parent" },
+    { t: "CUET preparation was excellent. Got admission in my dream college!", n: "Neha Gupta", r: "CUET Student" },
+    { t: "Kind faculties, great infrastructure. My child's grades improved drastically!", n: "Priya Sharma", r: "Parent" },
+    { t: "Best coaching for class 10 in Laxmi Nagar. Highly recommend!", n: "Rahul Verma", r: "Student" },
+    { t: "Concept clarity improved a lot after joining. Faculty explains everything patiently.", n: "Anjali Singh", r: "Class 10" },
+  ];
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-primary-foreground font-sans">
-      
-      {/* 1. PRELOADER */}
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+
+      {/* PRELOADER */}
       <AnimatePresence>
         {loading && (
           <motion.div
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-white"
           >
-            <motion.div
-              animate={{ 
-                scale: [1, 1.1, 1],
-                filter: ['drop-shadow(0 0 10px rgba(34, 211, 238, 0.2))', 'drop-shadow(0 0 40px rgba(34, 211, 238, 0.8))', 'drop-shadow(0 0 10px rgba(34, 211, 238, 0.2))']
+            <motion.img
+              src={logoPath}
+              alt="The Bansal Academy"
+              className="h-28 w-auto object-contain"
+              animate={{
+                scale: [1, 1.08, 1],
+                filter: [
+                  "drop-shadow(0 0 10px rgba(37,99,235,0.2))",
+                  "drop-shadow(0 0 30px rgba(37,99,235,0.5))",
+                  "drop-shadow(0 0 10px rgba(37,99,235,0.2))",
+                ],
               }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <img src={logoPath} alt="The Bansal Academy" className="h-24 md:h-32 w-auto object-contain" />
-            </motion.div>
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+            <motion.div
+              className="mt-6 h-1 w-32 rounded-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%]"
+              animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Progress Bar */}
+      {/* SCROLL PROGRESS BAR */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-accent transform origin-left z-50 shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+        className="fixed top-0 left-0 right-0 h-[3px] progress-bar origin-left z-[100]"
         style={{ scaleX }}
       />
 
-      {/* 2. NAVBAR */}
-      <nav className={`fixed top-0 w-full z-40 transition-all duration-500 ${scrolled ? 'bg-background/70 backdrop-blur-xl border-b border-white/10 py-4 shadow-lg' : 'bg-transparent py-6'}`}>
-        <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
-          <div className="flex items-center cursor-pointer" onClick={() => scrollTo('home')}>
-            <img src={logoPath} alt="The Bansal Academy" className="h-10 md:h-12 w-auto drop-shadow-[0_0_10px_rgba(37,99,235,0.3)]" />
-          </div>
-          
-          <div className="hidden md:flex items-center gap-8">
-            {['About', 'Courses', 'Why Us', 'Reviews', 'Contact'].map((item) => (
-              <button 
-                key={item}
-                onClick={() => scrollTo(item.toLowerCase().replace(' ', '-'))}
-                className="text-sm font-medium text-white/70 hover:text-accent transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] tracking-wide uppercase"
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          
-          <div className="hidden md:block">
-            <button 
-              onClick={() => scrollTo('contact')}
-              className="px-6 py-2.5 rounded-full bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all duration-300 font-bold tracking-wide uppercase text-sm"
-            >
-              Join Now
-            </button>
-          </div>
-
-          {/* Mobile Menu Icon */}
-          <button 
-            className="md:hidden p-2 text-white relative z-50"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              {mobileMenuOpen ? (
-                <>
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </>
-              ) : (
-                <>
-                  <line x1="3" y1="12" x2="21" y2="12"></line>
-                  <line x1="3" y1="6" x2="21" y2="6"></line>
-                  <line x1="3" y1="18" x2="21" y2="18"></line>
-                </>
-              )}
-            </svg>
-          </button>
-        </div>
-
-        {/* Mobile Menu Dropdown */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-background/95 backdrop-blur-xl border-b border-white/10 overflow-hidden"
-            >
-              <div className="container mx-auto px-6 py-6 flex flex-col gap-4">
-                {['About', 'Courses', 'Why Us', 'Reviews', 'Contact'].map((item) => (
-                  <button 
-                    key={item}
-                    onClick={() => {
-                      scrollTo(item.toLowerCase().replace(' ', '-'));
-                      setMobileMenuOpen(false);
-                    }}
-                    className="text-left text-lg font-medium text-white/80 hover:text-accent transition-colors py-2 uppercase tracking-wide"
-                  >
-                    {item}
-                  </button>
-                ))}
-                <button 
-                  onClick={() => {
-                    scrollTo('contact');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="mt-4 px-6 py-3 rounded-full bg-primary/20 border border-primary text-primary hover:bg-primary hover:text-white transition-colors font-bold uppercase text-sm w-full"
-                >
-                  Join Now
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
-
       <main>
-        {/* 3. HERO SECTION */}
-        <section id="home" className="relative h-screen flex items-center justify-center pt-20 overflow-hidden">
+        {/* ─── HERO ─── */}
+        <section className="relative min-h-screen flex items-center overflow-hidden hero-bg pt-24">
+          {/* 3D Background */}
           <ErrorBoundary>
             <ThreeBackground />
           </ErrorBoundary>
-          
-          <div className="container relative z-10 mx-auto px-6 lg:px-12 text-center md:text-left">
-            <div className="max-w-4xl mx-auto md:mx-0">
-              <motion.div
-                initial="hidden"
-                animate={!loading ? "visible" : "hidden"}
-                variants={staggerContainer}
-              >
-                <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-accent/50 transition-colors">
-                  <Star className="w-4 h-4 text-accent fill-accent" />
-                  <span className="text-sm font-semibold text-white/90 tracking-wide uppercase">5.0 Rating | 200+ Reviews</span>
+
+          {/* Floating gradient blobs for depth */}
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-blue-400/10 blur-[100px] pointer-events-none animate-float-slow" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-violet-400/10 blur-[80px] pointer-events-none animate-float-slow" style={{ animationDelay: "3s" }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-300/8 blur-[120px] pointer-events-none" />
+
+          {/* Floating math symbols */}
+          {["∑", "∫", "π", "√", "∞", "x²", "Δ", "θ"].map((sym, i) => (
+            <motion.span
+              key={i}
+              className="absolute text-2xl md:text-3xl font-bold text-primary/20 select-none pointer-events-none"
+              style={{
+                left: `${8 + (i * 12) % 85}%`,
+                top: `${10 + (i * 17) % 80}%`,
+                animationDelay: `${i * 0.8}s`,
+                animationDuration: `${5 + (i % 3) * 2}s`,
+              }}
+              animate={{
+                y: [0, -20, 0],
+                rotate: [0, i % 2 === 0 ? 8 : -8, 0],
+                opacity: [0.15, 0.35, 0.15],
+              }}
+              transition={{ duration: 5 + (i % 3) * 2, repeat: Infinity, delay: i * 0.8 }}
+            >
+              {sym}
+            </motion.span>
+          ))}
+
+          <div className="container relative z-10 mx-auto px-6 lg:px-16 py-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+              {/* LEFT — hero text */}
+              <motion.div initial="hidden" animate={!loading ? "visible" : "hidden"} variants={stagger}>
+                {/* Badge */}
+                <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-yellow-300 shadow-sm mb-8 backdrop-blur-sm">
+                  <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                  <span className="text-sm font-bold text-foreground/80">5.0 Rating | 200+ Reviews</span>
                 </motion.div>
-                
-                <motion.h1 variants={fadeInUp} className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.1] tracking-tight mb-6 text-white drop-shadow-2xl">
-                  Master <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-primary to-purple-400">Maths & Commerce</span><br/>With Confidence
+
+                {/* Logo in hero — big and visible */}
+                <motion.div variants={fadeInUp} className="mb-6">
+                  <img
+                    src={logoPath}
+                    alt="The Bansal Academy"
+                    className="h-20 md:h-24 w-auto object-contain drop-shadow-lg"
+                  />
+                </motion.div>
+
+                <motion.h1
+                  variants={fadeInUp}
+                  className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight mb-5"
+                  style={{ fontFamily: "Poppins, Inter, sans-serif" }}
+                >
+                  Master{" "}
+                  <span className="text-gradient-blue">Maths & Commerce</span>
+                  <br />
+                  with Confidence
                 </motion.h1>
-                
-                <motion.p variants={fadeInUp} className="text-lg md:text-2xl text-white/70 mb-12 max-w-2xl leading-relaxed mx-auto md:mx-0 font-light">
-                  Expert Coaching for Class 9, 10, Commerce & CUET. The IIT of coaching institutes in Laxmi Nagar.
+
+                <motion.p variants={fadeInUp} className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed">
+                  Expert coaching for Class 9, 10, Commerce & CUET in Laxmi Nagar, Delhi.
+                  Small batches, concept-based learning, proven results.
                 </motion.p>
-                
-                <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-5 justify-center md:justify-start">
-                  <button onClick={() => scrollTo('contact')} className="px-8 py-4 rounded-full bg-primary text-white font-bold text-lg hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 group uppercase tracking-wider">
-                    Book Free Demo
-                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                  <a href="tel:08750279822" className="px-8 py-4 rounded-full bg-white/5 border border-white/20 text-white font-bold text-lg hover:bg-white/10 hover:border-white/40 backdrop-blur-sm transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wider">
-                    <Phone className="w-5 h-5" />
-                    Call Now
-                  </a>
+
+                <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
+                  <Link href="/contact">
+                    <motion.button
+                      whileHover={{ scale: 1.04, boxShadow: "0 12px 40px rgba(37,99,235,0.35)" }}
+                      whileTap={{ scale: 0.97 }}
+                      className="px-8 py-4 rounded-2xl bg-primary text-white font-bold text-base shadow-lg shadow-blue-200 hover:bg-blue-700 transition-colors flex items-center gap-2 group"
+                    >
+                      Book Free Demo
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </motion.button>
+                  </Link>
+                  <motion.a
+                    href="tel:08750279822"
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="px-8 py-4 rounded-2xl bg-white border-2 border-primary/20 text-primary font-bold text-base hover:border-primary/50 hover:bg-primary/5 transition-all flex items-center gap-2 shadow-sm"
+                  >
+                    <Phone className="w-4 h-4" /> Call Now
+                  </motion.a>
                 </motion.div>
+
+                {/* Quick stats */}
+                <motion.div variants={fadeInUp} className="mt-10 flex gap-8">
+                  {[{ n: "200+", l: "Students" }, { n: "5.0", l: "Rating" }, { n: "95%", l: "Avg. Score" }].map((s, i) => (
+                    <div key={i}>
+                      <p className="text-2xl font-black text-primary">{s.n}</p>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{s.l}</p>
+                    </div>
+                  ))}
+                </motion.div>
+              </motion.div>
+
+              {/* RIGHT — card flipper */}
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={!loading ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+                transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
+                className="hidden lg:flex flex-col items-center gap-6"
+              >
+                <HeroCardFlipper />
+                <p className="text-sm text-muted-foreground font-medium flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  Click any card to flip it
+                </p>
               </motion.div>
             </div>
           </div>
-          
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce z-20 hidden md:block">
-            <button onClick={() => scrollTo('about')} className="p-3 rounded-full border border-white/20 bg-background/50 backdrop-blur-md text-white/50 hover:text-white hover:border-white/50 transition-colors">
-              <ChevronRight className="w-6 h-6 rotate-90" />
-            </button>
-          </div>
-          
-          {/* Bottom Fade Gradient to blend with next section */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
+
+          {/* Bottom blend */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none z-10" />
         </section>
 
-        {/* 4. ABOUT SECTION */}
-        <section id="about" className="py-32 relative z-10 bg-background">
-          <div className="container mx-auto px-6 lg:px-12">
-            <motion.div 
-              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
-              variants={fadeInUp}
-              className="text-center mb-20"
+        {/* ─── ABOUT PREVIEW ─── */}
+        <section className="py-24 bg-background">
+          <div className="container mx-auto px-6 lg:px-16">
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
+              variants={stagger}
+              className="text-center mb-14"
             >
-              <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
-                Redefining <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary animate-pulse">Excellence</span>
-              </h2>
-              <p className="text-white/60 max-w-3xl mx-auto text-xl font-light">We engineer success through deep conceptual clarity and personalized mentorship. No shortcuts. Just results.</p>
+              <motion.h2 variants={fadeInUp} className="text-3xl md:text-5xl font-black mb-4 tracking-tight">
+                Why We're <span className="text-gradient-blue">Different</span>
+              </motion.h2>
+              <motion.p variants={fadeInUp} className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                At The Bansal Academy, we engineer academic success through deep understanding, not shortcuts.
+              </motion.p>
             </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { icon: BrainCircuit, title: "Concept-Based Learning", desc: "Deep understanding, not rote memorization. We build the foundation from the ground up." },
-                { icon: Users, title: "Small Batch Sizes", desc: "Personalized attention for every student ensuring no doubt ever goes unanswered." },
-                { icon: GraduationCap, title: "Expert Faculty", desc: "Years of specialized teaching experience combined with proven pedagogical strategies." }
+                { icon: BrainCircuit, title: "Concept-Based Learning", desc: "We build true understanding from the ground up — no rote memorization, ever.", color: "bg-blue-50 text-blue-600", border: "border-blue-100", glow: "hover:shadow-blue-100" },
+                { icon: Users, title: "Small Batch Sizes", desc: "Each student gets personalized attention. No doubt goes unanswered.", color: "bg-green-50 text-green-600", border: "border-green-100", glow: "hover:shadow-green-100" },
+                { icon: GraduationCap, title: "Expert Faculty", desc: "Years of specialized teaching experience with proven pedagogical strategies.", color: "bg-violet-50 text-violet-600", border: "border-violet-100", glow: "hover:shadow-violet-100" },
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
-                  variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0, transition: { delay: i * 0.2, duration: 0.7, type: "spring", bounce: 0.4 } } }}
-                  className="group relative p-10 rounded-3xl bg-card/50 backdrop-blur-sm border border-white/5 overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(37,99,235,0.2)]"
-                  style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
+                  initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                  transition={{ delay: i * 0.12, type: "spring", bounce: 0.3 }}
+                  whileHover={{ y: -6, boxShadow: "0 20px 50px rgba(0,0,0,0.08)" }}
+                  className={`p-8 rounded-2xl bg-white border-2 ${item.border} shadow-sm ${item.glow} transition-all duration-300 cursor-default`}
                 >
-                  <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 rounded-full bg-primary/20 blur-3xl group-hover:bg-accent/30 transition-colors duration-500" />
-                  
-                  <div className="relative z-10 group-hover:-translate-y-2 transition-transform duration-500">
-                    <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-500">
-                      <item.icon className="w-8 h-8 text-accent group-hover:text-white transition-colors" />
-                    </div>
-                    <h3 className="text-2xl font-bold mb-4 text-white tracking-wide">{item.title}</h3>
-                    <p className="text-white/60 leading-relaxed text-lg font-light">{item.desc}</p>
+                  <div className={`w-14 h-14 rounded-2xl ${item.color} flex items-center justify-center mb-6`}>
+                    <item.icon className="w-7 h-7" />
                   </div>
+                  <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
+            </div>
+            <div className="text-center mt-10">
+              <Link href="/about">
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  className="px-8 py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all"
+                >
+                  Learn More About Us
+                </motion.button>
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* 5. COURSES SECTION */}
-        <section id="courses" className="py-32 relative z-10 bg-[#060810] border-y border-white/5">
-          {/* Subtle grid background */}
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none mix-blend-overlay"></div>
-          
-          <div className="container mx-auto px-6 lg:px-12 relative z-10">
-            <motion.div 
-              initial="hidden" whileInView="visible" viewport={{ once: true }}
-              variants={fadeInUp}
-              className="mb-20"
-            >
-              <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40">Courses</span></h2>
-              <div className="h-1 w-24 bg-gradient-to-r from-accent to-primary rounded-full" />
+        {/* ─── COURSES PREVIEW ─── */}
+        <section className="py-24 section-alt">
+          <div className="container mx-auto px-6 lg:px-16">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="mb-12">
+              <motion.h2 variants={fadeInUp} className="text-3xl md:text-5xl font-black mb-4 tracking-tight">Our <span className="text-gradient-blue">Courses</span></motion.h2>
+              <div className="h-1 w-20 bg-gradient-to-r from-primary to-accent rounded-full" />
             </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {[
-                { title: "Class 9 & 10", subtitle: "Maths & Science Foundation", icon: Calculator },
-                { title: "Commerce", subtitle: "Accounts, Economics & BST", icon: Target },
-                { title: "CUET Prep", subtitle: "Target Top Delhi Colleges", icon: Sparkles },
-                { title: "Doubt Sessions", subtitle: "Special 1-on-1 Clarity", icon: MessageCircle }
+                { icon: Calculator, title: "Class 9 & 10", sub: "Maths & Science Foundation", c: "from-blue-500 to-blue-600" },
+                { icon: Target, title: "Commerce", sub: "Accounts, Economics & BST", c: "from-violet-500 to-purple-600" },
+                { icon: Sparkles, title: "CUET Prep", sub: "Target Top Delhi Colleges", c: "from-orange-500 to-amber-500" },
+                { icon: MessageCircle, title: "Doubt Sessions", sub: "Special 1-on-1 Clarity", c: "from-teal-500 to-cyan-500" },
               ].map((course, i) => (
                 <motion.div
                   key={i}
-                  initial="hidden" whileInView="visible" viewport={{ once: true }}
-                  variants={{ hidden: { opacity: 0, scale: 0.9, y: 30 }, visible: { opacity: 1, scale: 1, y: 0, transition: { delay: i * 0.15, type: "spring" } } }}
-                  whileHover={{ y: -10, scale: 1.02 }}
-                  className="group relative p-8 rounded-3xl bg-background/80 backdrop-blur-xl border border-white/10 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] hover:border-accent/40 transition-all duration-300"
+                  initial={{ opacity: 0, scale: 0.92 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, type: "spring" }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group p-7 rounded-2xl bg-white border border-border shadow-sm hover:shadow-xl transition-all duration-300 cursor-default"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-300 pointer-events-none" />
-                  
-                  <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-8 group-hover:bg-accent/20 group-hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 relative z-10">
-                    <course.icon className="w-7 h-7 text-primary group-hover:text-accent" />
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${course.c} flex items-center justify-center mb-6 shadow-md group-hover:scale-110 transition-transform`}>
+                    <course.icon className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 tracking-wide">{course.title}</h3>
-                  <p className="text-white/50 text-sm mb-8 leading-relaxed font-light">{course.subtitle}</p>
-                  
-                  <div className="flex items-center text-sm font-bold tracking-widest uppercase text-primary group-hover:text-accent transition-colors mt-auto">
-                    Explore <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
-                  </div>
+                  <h3 className="text-lg font-bold mb-2">{course.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-4">{course.sub}</p>
+                  <Link href="/courses">
+                    <span className="text-primary font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                      Details <ChevronRight className="w-4 h-4" />
+                    </span>
+                  </Link>
                 </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* 6. WHY CHOOSE US SECTION */}
-        <section id="why-us" className="py-32 relative z-10 bg-background overflow-hidden">
-          {/* Abstract glow */}
-          <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
-          
-          <div className="container mx-auto px-6 lg:px-12 relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <motion.div 
-                initial="hidden" whileInView="visible" viewport={{ once: true }}
-                variants={fadeInUp}
-              >
-                <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight tracking-tight">Why Choose <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">The Bansal Academy?</span></h2>
-                <p className="text-white/60 text-xl mb-12 leading-relaxed font-light">
-                  We bridge the gap between hard work and smart work. Our methodologies are engineered to build problem-solving muscle rather than just passing exams.
-                </p>
-                
-                <div className="space-y-8">
-                  {[
-                    "Personalized Attention",
-                    "Proven Track Record & Results",
-                    "Regular Dedicated Doubt Clearing Sessions",
-                    "Interactive, Highly Motivating Environment"
-                  ].map((feature, i) => (
-                    <motion.div 
-                      key={i} 
-                      whileHover={{ x: 10 }}
-                      className="flex items-center gap-6 group cursor-default"
-                    >
-                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 group-hover:border-primary/50 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.4)] transition-all duration-300">
-                        <CheckCircle2 className="w-6 h-6 text-primary group-hover:text-accent transition-colors" />
-                      </div>
-                      <span className="text-xl font-medium text-white/80 group-hover:text-white transition-colors">{feature}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                initial={{ opacity: 0, x: 50, scale: 0.9 }} whileInView={{ opacity: 1, x: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, type: "spring" }}
-                className="relative hidden lg:block"
-              >
-                {/* Futuristic Visual Element */}
-                <div className="aspect-square w-full max-w-[500px] mx-auto relative flex items-center justify-center">
-                  {/* Outer Rings */}
-                  <div className="absolute inset-0 rounded-full border-[1px] border-white/5 animate-[spin_30s_linear_infinite]" />
-                  <div className="absolute inset-10 rounded-full border-[2px] border-dashed border-accent/20 animate-[spin_20s_linear_infinite_reverse]" />
-                  <div className="absolute inset-20 rounded-full border-[1px] border-primary/30 animate-[spin_15s_linear_infinite]" />
-                  
-                  {/* Core Content */}
-                  <div className="absolute inset-28 bg-gradient-to-br from-card to-background rounded-full backdrop-blur-xl border border-white/10 flex items-center justify-center shadow-[0_0_80px_rgba(37,99,235,0.2)]">
-                    <div className="text-center relative z-10">
-                      <span className="block text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-accent to-white mb-2 drop-shadow-lg">100%</span>
-                      <span className="text-sm font-bold text-white/50 uppercase tracking-[0.3em]">Commitment</span>
-                    </div>
-                  </div>
-                  
-                  {/* Floating Elements */}
-                  <div className="absolute top-10 right-20 w-16 h-16 rounded-2xl bg-card border border-white/10 backdrop-blur-md flex items-center justify-center animate-bounce delay-100 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
-                    <Star className="w-8 h-8 text-accent" />
-                  </div>
-                  <div className="absolute bottom-20 left-10 w-20 h-20 rounded-full bg-card border border-white/10 backdrop-blur-md flex items-center justify-center animate-bounce delay-300 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
-                    <Target className="w-10 h-10 text-primary" />
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+        {/* ─── REVIEWS STRIP ─── */}
+        <section className="py-20 bg-background overflow-hidden">
+          <div className="container mx-auto px-6 lg:px-16 mb-10 text-center">
+            <h2 className="text-3xl md:text-4xl font-black mb-3">What Students <span className="text-gradient-blue">Say</span></h2>
+            <p className="text-muted-foreground">Real feedback from our students & parents in Laxmi Nagar.</p>
           </div>
-        </section>
-
-        {/* 7. REVIEWS SECTION */}
-        <section id="reviews" className="py-32 relative z-10 bg-[#060810] border-y border-white/5 overflow-hidden">
-          <div className="container mx-auto px-6 lg:px-12 mb-16 text-center">
-            <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">Student <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Success</span></h2>
-            <p className="text-xl text-white/60 font-light max-w-2xl mx-auto">Real results from real students in Laxmi Nagar.</p>
-          </div>
-          
-          <div className="relative flex overflow-x-hidden group py-10">
-            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#060810] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#060810] to-transparent z-10 pointer-events-none" />
-            
-            <div className="animate-[scroll_40s_linear_infinite] flex gap-8 px-4 group-hover:[animation-play-state:paused]">
-              {[
-                { t: "Kind faculties, great infrastructure. My child's grades improved drastically!", n: "Priya Sharma", r: "Parent" },
-                { t: "Best coaching for class 10 in Laxmi Nagar. Highly recommend!", n: "Rahul Verma", r: "Student" },
-                { t: "Concept clarity improved a lot after joining. Faculty explains everything patiently.", n: "Anjali Singh", r: "Class 10" },
-                { t: "My daughter scored 95% in Maths after joining. Amazing results!", n: "Suresh Kumar", r: "Parent" },
-                { t: "CUET preparation was excellent. Got admission in my dream college!", n: "Neha Gupta", r: "CUET Student" },
-                // Duplicate for smooth loop
-                { t: "Kind faculties, great infrastructure. My child's grades improved drastically!", n: "Priya Sharma", r: "Parent" },
-                { t: "Best coaching for class 10 in Laxmi Nagar. Highly recommend!", n: "Rahul Verma", r: "Student" },
-                { t: "Concept clarity improved a lot after joining. Faculty explains everything patiently.", n: "Anjali Singh", r: "Class 10" },
-              ].map((review, i) => (
-                <div key={i} className="w-[400px] flex-shrink-0 p-8 rounded-3xl bg-card/40 backdrop-blur-xl border border-white/5 hover:border-primary/30 transition-colors">
-                  <div className="flex gap-1.5 mb-6">
-                    {[1,2,3,4,5].map(star => <Star key={star} className="w-5 h-5 text-accent fill-accent drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]" />)}
+          <div className="relative flex overflow-hidden group">
+            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            <div className="animate-scroll-marquee flex gap-6 px-4 group-hover:[animation-play-state:paused]">
+              {reviews.map((r, i) => (
+                <div key={i} className="w-[380px] flex-shrink-0 p-7 rounded-2xl bg-white border border-border shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex gap-1 mb-4">
+                    {[1,2,3,4,5].map(s => <Star key={s} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
                   </div>
-                  <p className="text-white/80 mb-8 text-lg font-light italic leading-relaxed">"{review.t}"</p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl">
-                      {review.n.charAt(0)}
+                  <p className="text-foreground/80 italic mb-5 text-sm leading-relaxed">"{r.t}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
+                      {r.n.charAt(0)}
                     </div>
                     <div>
-                      <h4 className="font-bold text-white tracking-wide">{review.n}</h4>
-                      <span className="text-sm font-medium text-primary uppercase tracking-widest">{review.r}</span>
+                      <p className="font-bold text-sm">{r.n}</p>
+                      <p className="text-xs text-primary font-semibold uppercase tracking-wide">{r.r}</p>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+          <div className="text-center mt-10">
+            <Link href="/reviews">
+              <motion.button whileHover={{ scale: 1.04 }} className="px-8 py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">
+                Read All Reviews
+              </motion.button>
+            </Link>
+          </div>
         </section>
 
-        {/* 8. CONTACT SECTION */}
-        <section id="contact" className="py-32 relative z-10 bg-background">
-          <div className="container mx-auto px-6 lg:px-12">
-            <motion.div 
-              initial="hidden" whileInView="visible" viewport={{ once: true }}
-              variants={fadeInUp}
-              className="text-center mb-20"
-            >
-              <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">Get In <span className="text-accent">Touch</span></h2>
-              <p className="text-xl text-white/60 font-light">Ready to transform your academic journey? The time is now.</p>
+        {/* ─── CONTACT CTA ─── */}
+        <section className="py-20 hero-bg relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-400/10 blur-[100px]" />
+          </div>
+          <div className="container mx-auto px-6 lg:px-16 text-center relative z-10">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="text-3xl md:text-5xl font-black mb-5 tracking-tight">
+                Ready to <span className="text-gradient-blue">Excel?</span>
+              </h2>
+              <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
+                Join the academy that transforms students into top scorers. Book your free demo session today.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/contact">
+                  <motion.button
+                    whileHover={{ scale: 1.05, boxShadow: "0 12px 40px rgba(37,99,235,0.3)" }}
+                    whileTap={{ scale: 0.97 }}
+                    className="px-10 py-4 rounded-2xl bg-primary text-white font-bold text-base shadow-lg shadow-blue-200 hover:bg-blue-700 transition-colors"
+                  >
+                    Book Free Demo
+                  </motion.button>
+                </Link>
+                <motion.a
+                  href="https://wa.me/918750279822"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="px-10 py-4 rounded-2xl bg-[#25D366] text-white font-bold text-base shadow-lg shadow-green-200 hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="white"><path d="M16.004 0h-.008C7.174 0 0 7.176 0 16a15.94 15.94 0 002.29 8.26L.792 29.816a.75.75 0 00.916.923l5.7-1.479A15.939 15.939 0 0016 32c8.824 0 16-7.176 16-16S24.828 0 16.004 0zm9.352 22.637c-.39.96-1.93 1.76-3.008 1.99-.8.17-1.844.307-5.355-1.152-4.494-1.851-7.39-6.41-7.614-6.707-.215-.297-1.812-2.414-1.812-4.606 0-2.19 1.145-3.262 1.55-3.714.39-.435.854-.544 1.14-.544.284 0 .57.003.82.014.264.012.618-.1.968.74.361.862 1.228 2.98 1.334 3.198.11.22.182.476.036.772-.146.296-.218.476-.436.734-.22.258-.463.578-.66.774-.22.22-.45.46-.194.906.258.447 1.148 1.891 2.464 3.063 1.694 1.51 3.12 1.98 3.566 2.2.445.218.703.182 1.02-.108.317-.29 1.08-1.187 1.37-1.596.29-.408.577-.34.97-.204.39.136 2.478 1.168 2.902 1.38.425.21.71.317.814.495.105.177.105 1.018-.285 1.977z"/></svg>
+                  WhatsApp Us
+                </motion.a>
+              </div>
             </motion.div>
+          </div>
+        </section>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-card rounded-[2.5rem] border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden">
-              <div className="p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden">
-                {/* Decorative background in contact form */}
-                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
-                
-                <div className="relative z-10 space-y-12">
-                  <div>
-                    <h3 className="text-3xl font-bold mb-10 tracking-tight text-white">Visit The Academy</h3>
-                    <div className="space-y-8">
-                      <div className="flex gap-6 group">
-                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                          <MapPin className="w-6 h-6 text-primary group-hover:text-accent transition-colors" />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-white/50 text-sm mb-2 uppercase tracking-widest">Location</h4>
-                          <p className="text-white/90 text-lg leading-relaxed">M 161, near Chinese Hut, Block M,<br/>Jagat Ram Park, Laxmi Nagar, Delhi</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-6 group">
-                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
-                          <Phone className="w-6 h-6 text-accent group-hover:text-white transition-colors" />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-white/50 text-sm mb-2 uppercase tracking-widest">Phone</h4>
-                          <a href="tel:08750279822" className="text-white/90 text-xl font-medium hover:text-accent transition-colors drop-shadow-[0_0_10px_rgba(0,0,0,1)]">08750279822</a>
-                        </div>
-                      </div>
-                    </div>
+        {/* ─── FOOTER ─── */}
+        <footer className="bg-foreground text-white pt-14 pb-8">
+          <div className="container mx-auto px-6 lg:px-16">
+            <div className="flex flex-col md:flex-row justify-between gap-10 mb-10">
+              <div>
+                <img src={logoPath} alt="The Bansal Academy" className="h-16 w-auto object-contain mb-4 brightness-0 invert opacity-90" />
+                <p className="text-white/60 text-sm max-w-xs leading-relaxed">Elite coaching for Maths & Commerce in Laxmi Nagar, Delhi.</p>
+              </div>
+              <div className="flex gap-12">
+                <div>
+                  <h4 className="font-bold mb-4 text-white/80 uppercase text-xs tracking-widest">Pages</h4>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { l: "Home", h: "/" },
+                      { l: "About", h: "/about" },
+                      { l: "Courses", h: "/courses" },
+                      { l: "Why Us", h: "/why-us" },
+                      { l: "Reviews", h: "/reviews" },
+                      { l: "Contact", h: "/contact" },
+                    ].map(item => (
+                      <Link key={item.h} href={item.h}>
+                        <span className="text-white/50 hover:text-white text-sm cursor-pointer transition-colors">{item.l}</span>
+                      </Link>
+                    ))}
                   </div>
-
-                  <div className="pt-10 border-t border-white/10 flex flex-col sm:flex-row gap-5">
-                    <a 
-                      href="tel:08750279822"
-                      className="flex-1 px-8 py-5 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold text-lg text-center transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-wide"
+                </div>
+                <div>
+                  <h4 className="font-bold mb-4 text-white/80 uppercase text-xs tracking-widest">Contact</h4>
+                  <div className="flex flex-col gap-2 text-sm text-white/50">
+                    <a href="tel:08750279822" className="hover:text-white transition-colors">08750279822</a>
+                    <p>Jagat Ram Park,<br/>Laxmi Nagar, Delhi</p>
+                    <a
+                      href="https://www.instagram.com/thebansalacademy?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                      target="_blank" rel="noopener noreferrer"
+                      className="hover:text-pink-400 transition-colors"
                     >
-                      <Phone className="w-5 h-5" /> Call Us
-                    </a>
-                    <a 
-                      href="https://wa.me/918750279822"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 px-8 py-5 rounded-2xl bg-[#25D366] hover:bg-[#25D366]/90 text-white font-bold text-lg text-center transition-all shadow-[0_0_20px_rgba(37,211,102,0.3)] hover:shadow-[0_0_30px_rgba(37,211,102,0.6)] hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-wide"
-                    >
-                      <MessageCircle className="w-5 h-5" /> WhatsApp
+                      @thebansalacademy
                     </a>
                   </div>
                 </div>
               </div>
-
-              <div className="h-[400px] lg:h-auto min-h-[500px] w-full relative">
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.9964522434316!2d77.27989917528956!3d28.63153547566539!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfcb5ab258a43%3A0x6c6e736db3229b1c!2sJagat%20Ram%20Park%2C%20Laxmi%20Nagar%2C%20New%20Delhi%2C%20Delhi%20110092!5e0!3m2!1sen!2sin!4v1709230538965!5m2!1sen!2sin" 
-                  className="absolute inset-0 w-full h-full border-0 filter invert-[90%] hue-rotate-[180deg] brightness-[80%] contrast-[85%] grayscale-[20%]" 
-                  allowFullScreen={true} 
-                  loading="lazy" 
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Google Maps Location"
-                ></iframe>
-                {/* Overlay to blend edges */}
-                <div className="absolute inset-0 border-l border-white/10 pointer-events-none hidden lg:block" />
-              </div>
+            </div>
+            <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30">
+              <p>&copy; {new Date().getFullYear()} The Bansal Academy. All rights reserved.</p>
+              <p className="uppercase tracking-widest font-bold">Laxmi Nagar, Delhi</p>
             </div>
           </div>
-        </section>
+        </footer>
       </main>
-
-      {/* 10. FOOTER */}
-      <footer className="bg-[#050505] border-t border-white/5 pt-20 pb-10 relative z-10">
-        <div className="container mx-auto px-6 lg:px-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-10 mb-16 text-center md:text-left">
-            <div>
-              <img src={logoPath} alt="The Bansal Academy" className="h-16 w-auto mb-6 mx-auto md:mx-0 drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]" />
-              <p className="text-white/50 max-w-sm text-lg font-light">Elite coaching institute for Maths & Commerce in Laxmi Nagar, Delhi.</p>
-            </div>
-            
-            <div className="flex gap-6">
-              <a href="https://www.instagram.com/thebansalacademy?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-gradient-to-tr hover:from-purple-600 hover:via-pink-500 hover:to-orange-500 hover:border-transparent transition-all duration-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.5)] group">
-                <svg className="w-6 h-6 text-white/70 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" /></svg>
-              </a>
-            </div>
-          </div>
-          
-          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-sm text-white/30 font-light">
-            <p>&copy; {new Date().getFullYear()} The Bansal Academy. All rights reserved.</p>
-            <p className="mt-4 md:mt-0 tracking-widest uppercase text-xs font-bold text-white/20">Designed for Excellence</p>
-          </div>
-        </div>
-      </footer>
-
-      {/* 9. FLOATING WHATSAPP BUTTON */}
-      <a 
-        href="https://wa.me/918750279822" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 z-50 w-16 h-16 bg-[#25D366] rounded-full flex items-center justify-center text-white shadow-[0_0_30px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_0_40px_rgba(37,211,102,0.6)] transition-all duration-300 group"
-        aria-label="Chat on WhatsApp"
-      >
-        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-40 duration-1000"></span>
-        <MessageCircle className="w-8 h-8 relative z-10" />
-        <span className="absolute right-full mr-6 bg-card/90 backdrop-blur-md text-white text-sm font-bold tracking-wide px-4 py-2 rounded-lg shadow-xl border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-          Chat with us
-        </span>
-      </a>
-
-      {/* Global CSS animation for continuous scroll */}
-      <style>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(calc(-400px * 5 - 2rem * 5)); }
-        }
-      `}</style>
     </div>
   );
 }
