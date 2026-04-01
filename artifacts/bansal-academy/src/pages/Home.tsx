@@ -4,7 +4,7 @@ import { Link } from "wouter";
 import { ThreeBackground } from "@/components/ThreeBackground";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Star, Phone, ChevronRight, Calculator, GraduationCap, Target, Sparkles, Users, BrainCircuit, CheckCircle2, MessageCircle } from "lucide-react";
-import logoPath from "@assets/Bansal-Academy-Logo_1775023861712.png";
+import logoPath from "@assets/BansalAcademyLogo_1775025162159.png";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 35 },
@@ -167,22 +167,26 @@ export default function Home() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
-            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-white"
+            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-slate-900"
           >
-            <motion.img
-              src={logoPath}
-              alt="The Bansal Academy"
-              className="h-28 w-auto object-contain"
+            <motion.div
+              className="bg-slate-800 rounded-2xl px-8 py-6 shadow-2xl"
               animate={{
-                scale: [1, 1.08, 1],
-                filter: [
-                  "drop-shadow(0 0 10px rgba(37,99,235,0.2))",
-                  "drop-shadow(0 0 30px rgba(37,99,235,0.5))",
-                  "drop-shadow(0 0 10px rgba(37,99,235,0.2))",
+                scale: [1, 1.05, 1],
+                boxShadow: [
+                  "0 0 20px rgba(37,99,235,0.2)",
+                  "0 0 50px rgba(37,99,235,0.5)",
+                  "0 0 20px rgba(37,99,235,0.2)",
                 ],
               }}
               transition={{ duration: 1.5, repeat: Infinity }}
-            />
+            >
+              <img
+                src={logoPath}
+                alt="The Bansal Academy"
+                className="h-28 w-auto object-contain"
+              />
+            </motion.div>
             <motion.div
               className="mt-6 h-1 w-32 rounded-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%]"
               animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
@@ -245,12 +249,14 @@ export default function Home() {
                 </motion.div>
 
                 {/* Logo in hero — big and visible */}
-                <motion.div variants={fadeInUp} className="mb-6">
-                  <img
-                    src={logoPath}
-                    alt="The Bansal Academy"
-                    className="h-20 md:h-24 w-auto object-contain drop-shadow-lg"
-                  />
+                <motion.div variants={fadeInUp} className="mb-6 inline-block">
+                  <div className="bg-slate-900 rounded-2xl px-4 py-3 shadow-lg inline-block">
+                    <img
+                      src={logoPath}
+                      alt="The Bansal Academy"
+                      className="h-16 md:h-20 w-auto object-contain"
+                    />
+                  </div>
                 </motion.div>
 
                 <motion.h1
@@ -487,7 +493,7 @@ export default function Home() {
           <div className="container mx-auto px-6 lg:px-16">
             <div className="flex flex-col md:flex-row justify-between gap-10 mb-10">
               <div>
-                <img src={logoPath} alt="The Bansal Academy" className="h-16 w-auto object-contain mb-4 brightness-0 invert opacity-90" />
+                <img src={logoPath} alt="The Bansal Academy" className="h-16 w-auto object-contain mb-4" />
                 <p className="text-white/60 text-sm max-w-xs leading-relaxed">Elite coaching for Maths & Commerce in Laxmi Nagar, Delhi.</p>
               </div>
               <div className="flex gap-12">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import logoPath from "@assets/Bansal-Academy-Logo_1775023861712.png";
+import logoPath from "@assets/BansalAcademyLogo_1775025162159.png";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -48,11 +48,13 @@ export function Navbar() {
                 className="flex items-center gap-2 cursor-pointer"
                 whileHover={{ scale: 1.02 }}
               >
-                <img
-                  src={logoPath}
-                  alt="The Bansal Academy"
-                  className="h-12 md:h-14 w-auto object-contain drop-shadow-sm"
-                />
+                <div className="bg-slate-900 rounded-xl px-2.5 py-1.5 shadow-md">
+                  <img
+                    src={logoPath}
+                    alt="The Bansal Academy"
+                    className="h-9 md:h-11 w-auto object-contain"
+                  />
+                </div>
               </motion.div>
             </Link>
 

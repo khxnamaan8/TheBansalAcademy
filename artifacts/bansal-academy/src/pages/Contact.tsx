@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { MapPin, Phone, Clock, Send, MessageCircle } from "lucide-react";
-import logoPath from "@assets/Bansal-Academy-Logo_1775023861712.png";
+import logoPath from "@assets/BansalAcademyLogo_1775025162159.png";
 
 const fade = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
@@ -15,7 +15,11 @@ export default function Contact() {
         </div>
         <div className="container mx-auto px-6 lg:px-16 relative z-10 text-center max-w-3xl mx-auto">
           <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.img variants={fade} src={logoPath} alt="The Bansal Academy" className="h-20 w-auto object-contain mx-auto mb-8 drop-shadow-lg" />
+            <motion.div variants={fade} className="mb-8 flex justify-center">
+              <div className="bg-slate-900 rounded-2xl px-6 py-4 shadow-xl inline-block">
+                <img src={logoPath} alt="The Bansal Academy" className="h-16 w-auto object-contain" />
+              </div>
+            </motion.div>
             <motion.h1 variants={fade} className="text-4xl md:text-6xl font-black mb-5 tracking-tight">
               Get In <span className="text-gradient-blue">Touch</span>
             </motion.h1>

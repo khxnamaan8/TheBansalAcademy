@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { BrainCircuit, Users, GraduationCap, Target, CheckCircle2, Award, BookOpen, Heart } from "lucide-react";
-import logoPath from "@assets/Bansal-Academy-Logo_1775023861712.png";
+import logoPath from "@assets/BansalAcademyLogo_1775025162159.png";
 
 const fade = {
   hidden: { opacity: 0, y: 30 },
@@ -20,7 +20,11 @@ export default function About() {
         </div>
         <div className="container mx-auto px-6 lg:px-16 relative z-10">
           <motion.div initial="hidden" animate="visible" variants={stagger} className="text-center max-w-3xl mx-auto">
-            <motion.img variants={fade} src={logoPath} alt="The Bansal Academy" className="h-24 w-auto object-contain mx-auto mb-8 drop-shadow-lg" />
+            <motion.div variants={fade} className="mb-8 flex justify-center">
+              <div className="bg-slate-900 rounded-2xl px-6 py-4 shadow-xl inline-block">
+                <img src={logoPath} alt="The Bansal Academy" className="h-20 w-auto object-contain" />
+              </div>
+            </motion.div>
             <motion.h1 variants={fade} className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
               About <span className="text-gradient-blue">The Bansal Academy</span>
             </motion.h1>
