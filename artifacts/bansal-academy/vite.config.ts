@@ -46,10 +46,10 @@ export default defineConfig(async ({ command }) => {
 
     root: path.resolve(import.meta.dirname),
 
-    build: {
-      outDir: path.resolve(import.meta.dirname, "dist/public"),
-      emptyOutDir: true,
-    },
+   build: {
+  outDir: "dist",
+  emptyOutDir: true,
+},
 
     // dev server only (safe now)
     server: isDev
