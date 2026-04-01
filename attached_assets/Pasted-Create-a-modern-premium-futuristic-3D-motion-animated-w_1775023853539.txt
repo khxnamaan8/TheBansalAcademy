@@ -1,0 +1,249 @@
+Create a modern, premium, futuristic 3D motion animated website for a coaching institute named "The Bansal Academy" located in Laxmi Nagar, Delhi.
+
+GOAL:
+
+Design a high-converting, visually stunning website that builds trust and generates leads (students & parents). The UI should feel like a top-tier tech brand with smooth animations and strong UX.
+
+--------------------------------------------------
+
+TECH & ANIMATION:
+
+- Use Three.js for real 3D background scenes
+
+- Use Framer Motion + GSAP for ultra-smooth animations
+
+- Add parallax scroll effects with depth layers
+
+- Implement smooth scrolling (no lag)
+
+- Add micro-interactions across UI
+
+- Add magnetic buttons & hover distortion effects
+
+- Add cursor glow / trailing light effect
+
+- Add floating particles animation in background
+
+- Add scroll progress indicator at top
+
+--------------------------------------------------
+
+DESIGN STYLE:
+
+- Dark premium UI (black + deep blue + neon accents)
+
+- Glassmorphism (blur + transparency)
+
+- Soft shadows + glowing borders
+
+- Clean, minimal, futuristic layout
+
+- Gradient highlights and light streaks
+
+COLOR PALETTE:
+
+- #0A0A0A (primary background)
+
+- #111827 (secondary dark)
+
+- #1E3A8A (deep blue)
+
+- #2563EB (accent blue)
+
+- #22D3EE (neon cyan glow)
+
+- #A78BFA (subtle purple highlight)
+
+- #FFFFFF (text)
+
+--------------------------------------------------
+
+HERO SECTION (FULL SCREEN + 3D INTERACTIVE):
+
+- Full viewport height (100vh)
+
+- Large interactive 3D scene (floating math formulas, graphs, numbers, particles)
+
+- Background moves slightly with scroll (3D parallax effect)
+
+- Headline:
+
+  "Master Maths & Commerce with Confidence"
+
+- Subheading:
+
+  "Expert Coaching for Class 9, 10, Commerce & CUET"
+
+- CTA Buttons:
+
+  - "Book Free Demo" (primary glowing button)
+
+  - "Call Now"
+
+- Add floating badge:
+
+  ⭐ 5.0 Rating | 200+ Reviews
+
+- Smooth entrance animations (fade, scale, slide)
+
+--------------------------------------------------
+
+SCROLL ANIMATION EXPERIENCE:
+
+- Continuous animated 3D background while scrolling
+
+- Each section appears with:
+
+  - fade-up animation
+
+  - slight 3D tilt
+
+  - smooth transition
+
+- Add section-based scroll snapping (optional premium feel)
+
+--------------------------------------------------
+
+SECTIONS:
+
+1. ABOUT
+
+- Short intro with animated glass cards
+
+- Highlight:
+
+  - Concept-based learning
+
+  - Small batch size
+
+  - Expert faculty
+
+2. COURSES
+
+- Class 9 & 10
+
+- Maths & Science
+
+- Commerce & Accounts
+
+- CUET Preparation
+
+- Use glowing 3D cards with hover tilt
+
+3. WHY CHOOSE US
+
+- Icons + animated elements:
+
+  - Personalized attention
+
+  - Proven results
+
+  - Doubt clearing sessions
+
+  - Friendly environment
+
+4. REVIEWS
+
+- Animated testimonial slider
+
+- Glassmorphism cards
+
+- Include:
+
+  "Kind faculties, great infrastructure..."
+
+  "Best coaching for class 10 in Laxmi Nagar..."
+
+  "Highly recommended..."
+
+5. CONTACT
+
+- Address:
+
+  M 161, near Chinese Hut, Block M, Jagat Ram Park, Laxmi Nagar, Delhi
+
+- Phone: 08750279822
+
+- Buttons:
+
+  - Call Now
+
+  - WhatsApp Chat
+
+- Embed Google Map
+
+--------------------------------------------------
+
+WHATSAPP FLOATING BUTTON:
+
+- Add floating WhatsApp button at bottom-right corner
+
+- Always visible (sticky)
+
+- Add pulse/glow animation
+
+- On click → open WhatsApp chat (wa.me link placeholder)
+
+- Add tooltip: "Chat with us"
+
+--------------------------------------------------
+
+NAVBAR:
+
+- Glassmorphism navbar
+
+- Transparent initially → becomes solid on scroll
+
+- Sticky top navigation
+
+- Smooth scroll links
+
+--------------------------------------------------
+
+FOOTER:
+
+- Clean minimal footer
+
+- Contact info
+
+- Space for Instagram link (I will add later)
+
+- Space for logo (I will upload later)
+
+--------------------------------------------------
+
+EXTRA PREMIUM FEATURES:
+
+- Add subtle UI sound/micro-interactions (optional)
+
+- Add loading animation (preloader with logo placeholder)
+
+- Add section dividers with animated gradients
+
+- Add hover glow effects on all clickable elements
+
+--------------------------------------------------
+
+PERFORMANCE:
+
+- Fully responsive (mobile, tablet, desktop)
+
+- Optimized for fast loading
+
+- Smooth animations on all devices
+
+--------------------------------------------------
+
+IMPORTANT:
+
+- Keep UI clean and not cluttered
+
+- Focus on conversion (lead generation)
+
+- Maintain a premium, futuristic look
+
+--------------------------------------------------
+
+NOTE:
+
+I will upload logo and Instagram link later, so keep placeholders for them. (insta link; https://www.instagram.com/thebansalacademy?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==)

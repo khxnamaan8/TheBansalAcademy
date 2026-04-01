@@ -48,6 +48,30 @@ Every package extends `tsconfig.base.json` which sets `composite: true`. The roo
 - `pnpm run build` — runs `typecheck` first, then recursively runs `build` in all packages that define it
 - `pnpm run typecheck` — runs `tsc --build --emitDeclarationOnly` using project references
 
+## Artifacts
+
+### `artifacts/bansal-academy` (`@workspace/bansal-academy`)
+
+Premium, futuristic single-page website for The Bansal Academy coaching institute.
+
+- **Stack**: React + Vite + TypeScript + Tailwind CSS + Framer Motion + Three.js + GSAP
+- **Preview path**: `/` (root)
+- **Design**: Dark premium UI (#0A0A0A background), glassmorphism, neon cyan (#22D3EE) + blue (#2563EB) accents
+- **Features**:
+  - Preloader with pulsing neon logo animation
+  - Glassmorphism sticky navbar (transparent → solid on scroll)
+  - Full-screen hero with Three.js 3D particle/geometry background (WebGL with CSS fallback)
+  - Mouse parallax effect on 3D scene
+  - Scroll progress indicator
+  - About, Courses, Why Choose Us, Reviews (auto-scroll slider), Contact sections
+  - Embedded Google Maps
+  - Floating WhatsApp button with pulse animation
+  - Mobile-responsive hamburger menu
+  - Framer Motion scroll-triggered entrance animations throughout
+- **Logo**: `attached_assets/Bansal-Academy-Logo_1775023861712.png` (imported via `@assets` alias)
+- **Contact**: 08750279822 | M 161, Jagat Ram Park, Laxmi Nagar, Delhi
+- **Social**: Instagram placeholder ready
+
 ## Packages
 
 ### `artifacts/api-server` (`@workspace/api-server`)
