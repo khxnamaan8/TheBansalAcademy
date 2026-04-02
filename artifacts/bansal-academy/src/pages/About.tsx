@@ -48,12 +48,11 @@ function AboutFacultyCard({ name, role, subject, bio, points, photo, accent, del
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 60 }}
+      initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ delay, duration: 0.7, type: "spring", bounce: 0.25 }}
       style={{ perspective: 1000 }}
-      className="pt-[110px]"
     >
       <motion.div
         ref={cardRef}
@@ -62,42 +61,30 @@ function AboutFacultyCard({ name, role, subject, bio, points, photo, accent, del
         onMouseLeave={onLeave}
         whileHover={{ scale: 1.015 }}
         transition={{ type: "spring", stiffness: 280, damping: 28 }}
-        className="relative bg-white rounded-3xl border-2 border-border shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-visible"
+        className="relative bg-white rounded-3xl border-2 border-border shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex"
       >
-        {/* Coloured top strip */}
-        <div className={`h-28 rounded-t-3xl bg-gradient-to-br ${gradFrom} relative overflow-hidden`}>
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_70%_50%,white,transparent)]" />
+        {/* Left — gradient panel with photo */}
+        <div className={`relative flex-shrink-0 w-44 bg-gradient-to-b ${gradFrom} flex items-end justify-center overflow-hidden`}>
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,white,transparent)]" />
+          <motion.img
+            style={{ translateZ: 30, height: "260px" }}
+            src={photo}
+            alt={name}
+            className="relative z-10 w-full object-cover object-top"
+          />
         </div>
 
-        {/* Photo — pops out above the card */}
-        <motion.div
-          style={{ translateZ: 40 }}
-          className="absolute left-1/2 -translate-x-1/2"
-          initial={{ top: "-95px" }}
-          animate={{ top: "-95px" }}
-        >
-          <div className={`w-44 h-52 rounded-2xl overflow-hidden ring-4 ${ringCol} shadow-2xl bg-gradient-to-b from-slate-100 to-slate-200`}
-               style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.18))" }}>
-            <img src={photo} alt={name} className="w-full h-full object-cover object-top" />
-          </div>
-          {/* Floating badge */}
-          <motion.div
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-            className={`absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold border shadow-md ${tagCol}`}
-          >
+        {/* Right — content */}
+        <div className="flex-1 p-7 flex flex-col justify-center">
+          <span className={`inline-flex self-start px-3 py-1 rounded-full text-xs font-bold border ${tagCol} mb-3`}>
+            {role}
+          </span>
+          <h3 className="text-2xl font-black text-foreground mb-1">{name}</h3>
+          <div className={`inline-flex self-start px-3 py-1.5 rounded-xl bg-gradient-to-r ${gradFrom} text-white text-xs font-bold mb-4 shadow-sm`}>
             {subject}
-          </motion.div>
-        </motion.div>
-
-        {/* Card body */}
-        <div className="pt-16 pb-8 px-7">
-          <div className="text-center mb-5">
-            <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold border ${tagCol} mb-2`}>{role}</span>
-            <h3 className="text-2xl font-black text-foreground">{name}</h3>
-            <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{bio}</p>
           </div>
-          <div className="border-t border-border pt-5 space-y-2.5">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-5">{bio}</p>
+          <div className="border-t border-border pt-4 space-y-2.5">
             {points.map((pt, i) => (
               <div key={i} className="flex items-center gap-2.5">
                 <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${checkCol}`} />
