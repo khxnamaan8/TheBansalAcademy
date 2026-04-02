@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring, useMotionValue, useTransform } from "framer-motion";
 import { Link } from "wouter";
 import { ThreeBackground } from "@/components/ThreeBackground";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { Star, Phone, ChevronRight, Calculator, GraduationCap, Target, Sparkles, Users, BrainCircuit, CheckCircle2, MessageCircle } from "lucide-react";
+import { Star, Phone, ChevronRight, Calculator, GraduationCap, Target, Sparkles, Users, BrainCircuit, CheckCircle2, MessageCircle, Plus, Minus } from "lucide-react";
 import logoPath from "@assets/BansalAcademyLogo_1775025162159.png";
+
+const namanImg = `${import.meta.env.BASE_URL}faculty-naman.png`;
+const dipeshImg = `${import.meta.env.BASE_URL}faculty-dipesh.png`;
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 35 },
@@ -83,6 +86,234 @@ const flipCards = [
   },
 ];
 
+// ─── 3D FACULTY CARD ───────────────────────────────────────────────────────────
+interface FacultyCardProps {
+  name: string;
+  role: string;
+  subject: string;
+  subjectColor: string;
+  badgeColor: string;
+  photo: string;
+  points: string[];
+  delay: number;
+  accent: "blue" | "violet";
+}
+
+function FacultyCard({ name, role, subject, subjectColor, badgeColor, photo, points, delay, accent }: FacultyCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-80, 80], [8, -8]);
+  const rotateY = useTransform(x, [-80, 80], [-8, 8]);
+
+  const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    x.set(e.clientX - rect.left - rect.width / 2);
+    y.set(e.clientY - rect.top - rect.height / 2);
+  };
+  const handleMouseLeave = () => { x.set(0); y.set(0); };
+
+  const glowColor = accent === "blue"
+    ? "hover:shadow-blue-200/60"
+    : "hover:shadow-violet-200/60";
+  const ringColor = accent === "blue" ? "ring-blue-200" : "ring-violet-200";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ delay, duration: 0.7, type: "spring", bounce: 0.3 }}
+      style={{ perspective: 1200 }}
+    >
+      <motion.div
+        ref={cardRef}
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        onMouseMove={handleMouse}
+        onMouseLeave={handleMouseLeave}
+        whileHover={{ scale: 1.02 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className={`relative bg-white rounded-3xl border-2 border-border shadow-xl ${glowColor} hover:shadow-2xl transition-shadow duration-300 overflow-hidden cursor-default`}
+      >
+        {/* Top gradient band */}
+        <div className={`h-2 w-full bg-gradient-to-r ${subjectColor}`} />
+
+        <div className="p-8">
+          <div className="flex flex-col sm:flex-row gap-6 items-start">
+            {/* Photo */}
+            <motion.div
+              style={{ translateZ: 30 }}
+              className="relative flex-shrink-0"
+            >
+              <div className={`w-36 h-40 rounded-2xl overflow-hidden ring-4 ${ringColor} shadow-lg bg-gradient-to-b from-slate-50 to-slate-100 relative`}>
+                <img
+                  src={photo}
+                  alt={name}
+                  className="w-full h-full object-cover object-top"
+                />
+                {/* Floating glow behind photo */}
+                <div className={`absolute inset-0 bg-gradient-to-t ${subjectColor} opacity-10 pointer-events-none`} />
+              </div>
+              {/* Subject badge floating */}
+              <motion.div
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className={`absolute -bottom-3 -right-3 px-3 py-1.5 rounded-xl text-xs font-bold border ${badgeColor} shadow-md`}
+              >
+                {accent === "blue" ? "Maths & Science" : "Commerce"}
+              </motion.div>
+            </motion.div>
+
+            {/* Info */}
+            <motion.div style={{ translateZ: 20 }} className="flex-1 min-w-0">
+              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold border ${badgeColor} mb-3`}>
+                {role}
+              </span>
+              <h3 className="text-2xl font-black text-foreground mb-1">{name}</h3>
+              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r ${subjectColor} text-white text-xs font-bold mb-5 shadow-sm`}>
+                {subject}
+              </div>
+
+              <div className="space-y-2.5">
+                {points.map((pt, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: delay + 0.1 + i * 0.06 }}
+                    className="flex items-center gap-2.5"
+                  >
+                    <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${accent === "blue" ? "text-blue-500" : "text-violet-500"}`} />
+                    <span className="text-sm text-foreground/75 font-medium">{pt}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Decorative 3D depth element */}
+        <motion.div
+          style={{ translateZ: 10 }}
+          className={`absolute top-4 right-4 w-16 h-16 rounded-full bg-gradient-to-br ${subjectColor} opacity-8 blur-2xl pointer-events-none`}
+        />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ─── FAQ SECTION ──────────────────────────────────────────────────────────────
+const faqs = [
+  {
+    q: "What subjects are taught at The Bansal Academy?",
+    a: "We offer expert coaching in Mathematics & Science for Class 9 & 10, and Commerce subjects (Accountancy, Economics, Business Studies) for Class 11 & 12. We also provide specialized CUET preparation for students targeting top Delhi universities.",
+  },
+  {
+    q: "How small are the batch sizes?",
+    a: "We maintain strictly small batches to ensure every student gets personalized attention. This means your doubts are always heard and addressed — unlike large coaching centers where students easily get lost in the crowd.",
+  },
+  {
+    q: "Where is The Bansal Academy located?",
+    a: "We are located at M 161, near Chinese Hut, Block M, Jagat Ram Park, Laxmi Nagar, Delhi – 110092. Easily accessible from all parts of Laxmi Nagar.",
+  },
+  {
+    q: "Is there a free demo class available?",
+    a: "Yes! We offer a completely free demo session so you can experience our teaching methodology, meet the faculty, and assess the learning environment before enrolling. Contact us at 08750279822 or WhatsApp us to book your slot.",
+  },
+  {
+    q: "What are the batch timings?",
+    a: "We have morning batches (7:00 AM – 10:00 AM) and evening batches (4:00 PM – 8:00 PM), Monday to Saturday. Specific slot availability depends on the subject and class — contact us for the latest schedule.",
+  },
+  {
+    q: "Do you offer doubt clearing sessions?",
+    a: "Absolutely. Dedicated doubt clearing sessions are a core part of our program. We believe no student should move forward with unresolved concepts, so we schedule regular 1-on-1 doubt sessions every week.",
+  },
+  {
+    q: "How is The Bansal Academy different from other coaching centers?",
+    a: "Three things set us apart: concept-first teaching (never rote memorization), genuinely small batch sizes for real personal attention, and dedicated weekly doubt sessions. Our 5.0 rating from 200+ students speaks for itself.",
+  },
+  {
+    q: "How can I contact or enroll?",
+    a: "Call us at 08750279822, WhatsApp at +91 87502 79822 or +91 79820 62095, or visit us directly at Jagat Ram Park, Laxmi Nagar. You can also follow us on Instagram @thebansalacademy.",
+  },
+];
+
+function FaqSection() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <section className="py-24 bg-background">
+      <div className="container mx-auto px-6 lg:px-16">
+        <motion.div
+          initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+          variants={stagger}
+          className="text-center mb-14"
+        >
+          <motion.h2 variants={fadeInUp} className="text-3xl md:text-5xl font-black mb-4 tracking-tight">
+            Frequently Asked <span className="text-gradient-blue">Questions</span>
+          </motion.h2>
+          <motion.p variants={fadeInUp} className="text-muted-foreground text-lg max-w-xl mx-auto">
+            Everything you need to know about The Bansal Academy.
+          </motion.p>
+        </motion.div>
+
+        <div className="max-w-3xl mx-auto space-y-3">
+          {faqs.map((faq, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05, type: "spring" }}
+              className={`rounded-2xl border-2 transition-all duration-200 overflow-hidden ${
+                open === i
+                  ? "border-primary/40 shadow-md shadow-blue-100"
+                  : "border-border bg-white hover:border-primary/20"
+              }`}
+            >
+              <button
+                onClick={() => setOpen(open === i ? null : i)}
+                className="w-full flex items-center justify-between gap-4 p-6 text-left"
+              >
+                <span className={`font-bold text-base leading-snug ${open === i ? "text-primary" : "text-foreground"}`}>
+                  {faq.q}
+                </span>
+                <motion.div
+                  animate={{ rotate: open === i ? 180 : 0 }}
+                  transition={{ duration: 0.25 }}
+                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                    open === i ? "bg-primary text-white" : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {open === i ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                </motion.div>
+              </button>
+              <AnimatePresence initial={false}>
+                {open === i && (
+                  <motion.div
+                    key="content"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-6 pb-6 text-muted-foreground leading-relaxed text-sm border-t border-border pt-4">
+                      {faq.a}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── HERO FLIPPER ─────────────────────────────────────────────────────────────
 function HeroCardFlipper() {
   const [flipped, setFlipped] = useState([false, false, false, false]);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -380,6 +611,67 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* ─── FACULTY SECTION ─── */}
+        <section className="py-24 section-alt overflow-hidden">
+          <div className="container mx-auto px-6 lg:px-16">
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
+              variants={stagger}
+              className="text-center mb-16"
+            >
+              <motion.span variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-semibold text-sm mb-5">
+                <GraduationCap className="w-4 h-4" /> Expert Faculty
+              </motion.span>
+              <motion.h2 variants={fadeInUp} className="text-3xl md:text-5xl font-black mb-4 tracking-tight">
+                Meet Our <span className="text-gradient-blue">Teachers</span>
+              </motion.h2>
+              <motion.p variants={fadeInUp} className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Passionate educators who don't just teach — they inspire, mentor, and transform students into confident achievers.
+              </motion.p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
+              {/* Naman Bansal */}
+              <FacultyCard
+                name="Naman Bansal"
+                role="Founder & Head Teacher"
+                subject="Class 9 & 10 — Maths & Science"
+                subjectColor="from-blue-500 to-blue-600"
+                badgeColor="bg-blue-50 text-blue-700 border-blue-200"
+                photo={namanImg}
+                points={[
+                  "PAQ Coverage of Last 5 Years",
+                  "Basic to Advanced Concepts",
+                  "Regular Tests & Assessments",
+                  "Case-Based Question Practice",
+                ]}
+                delay={0}
+                accent="blue"
+              />
+              {/* Dipesh Sir */}
+              <FacultyCard
+                name="Dipesh Sir"
+                role="Commerce Expert"
+                subject="Class 11 & 12 — Commerce"
+                subjectColor="from-violet-500 to-purple-600"
+                badgeColor="bg-violet-50 text-violet-700 border-violet-200"
+                photo={dipeshImg}
+                points={[
+                  "Accountancy, Economics & BST",
+                  "Personalized Attention Always",
+                  "Regular Assessments & Tests",
+                  "Dedicated Doubt Clearing Sessions",
+                ]}
+                delay={0.15}
+                accent="violet"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ─── FAQ SECTION ─── */}
+        <FaqSection />
 
         {/* ─── CONTACT CTA ─── */}
         <section className="py-20 hero-bg relative overflow-hidden">
