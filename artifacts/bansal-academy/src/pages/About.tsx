@@ -1,13 +1,115 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Link } from "wouter";
 import { BrainCircuit, Users, GraduationCap, Target, CheckCircle2, Award, BookOpen, Heart } from "lucide-react";
 import logoPath from "@assets/BansalAcademyLogo_1775025162159.png";
+
+const namanImg = `${import.meta.env.BASE_URL}faculty-naman.png`;
+const dipeshImg = `${import.meta.env.BASE_URL}faculty-dipesh.png`;
 
 const fade = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
+
+interface AboutFacultyCardProps {
+  name: string;
+  role: string;
+  subject: string;
+  bio: string;
+  points: string[];
+  photo: string;
+  accent: "blue" | "violet";
+  delay: number;
+}
+
+function AboutFacultyCard({ name, role, subject, bio, points, photo, accent, delay }: AboutFacultyCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rotX = useTransform(my, [-60, 60], [6, -6]);
+  const rotY = useTransform(mx, [-60, 60], [-6, 6]);
+
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = cardRef.current?.getBoundingClientRect();
+    if (!r) return;
+    mx.set(e.clientX - r.left - r.width / 2);
+    my.set(e.clientY - r.top - r.height / 2);
+  };
+  const onLeave = () => { mx.set(0); my.set(0); };
+
+  const gradFrom = accent === "blue" ? "from-blue-500 to-blue-600" : "from-violet-500 to-purple-600";
+  const ringCol  = accent === "blue" ? "ring-blue-300"            : "ring-violet-300";
+  const tagCol   = accent === "blue"
+    ? "bg-blue-50 text-blue-700 border-blue-200"
+    : "bg-violet-50 text-violet-700 border-violet-200";
+  const checkCol = accent === "blue" ? "text-blue-500" : "text-violet-500";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ delay, duration: 0.7, type: "spring", bounce: 0.25 }}
+      style={{ perspective: 1000 }}
+      className="pt-[110px]"
+    >
+      <motion.div
+        ref={cardRef}
+        style={{ rotateX: rotX, rotateY: rotY, transformStyle: "preserve-3d" }}
+        onMouseMove={onMove}
+        onMouseLeave={onLeave}
+        whileHover={{ scale: 1.015 }}
+        transition={{ type: "spring", stiffness: 280, damping: 28 }}
+        className="relative bg-white rounded-3xl border-2 border-border shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-visible"
+      >
+        {/* Coloured top strip */}
+        <div className={`h-28 rounded-t-3xl bg-gradient-to-br ${gradFrom} relative overflow-hidden`}>
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_70%_50%,white,transparent)]" />
+        </div>
+
+        {/* Photo — pops out above the card */}
+        <motion.div
+          style={{ translateZ: 40 }}
+          className="absolute left-1/2 -translate-x-1/2"
+          initial={{ top: "-95px" }}
+          animate={{ top: "-95px" }}
+        >
+          <div className={`w-44 h-52 rounded-2xl overflow-hidden ring-4 ${ringCol} shadow-2xl bg-gradient-to-b from-slate-100 to-slate-200`}
+               style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.18))" }}>
+            <img src={photo} alt={name} className="w-full h-full object-cover object-top" />
+          </div>
+          {/* Floating badge */}
+          <motion.div
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+            className={`absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold border shadow-md ${tagCol}`}
+          >
+            {subject}
+          </motion.div>
+        </motion.div>
+
+        {/* Card body */}
+        <div className="pt-16 pb-8 px-7">
+          <div className="text-center mb-5">
+            <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold border ${tagCol} mb-2`}>{role}</span>
+            <h3 className="text-2xl font-black text-foreground">{name}</h3>
+            <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{bio}</p>
+          </div>
+          <div className="border-t border-border pt-5 space-y-2.5">
+            {points.map((pt, i) => (
+              <div key={i} className="flex items-center gap-2.5">
+                <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${checkCol}`} />
+                <span className="text-sm text-foreground/75 font-medium">{pt}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export default function About() {
   return (
@@ -103,6 +205,59 @@ export default function About() {
                 <p className="text-muted-foreground text-sm leading-relaxed">{v.desc}</p>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Faculty */}
+      <section className="py-20 bg-background overflow-visible">
+        <div className="container mx-auto px-6 lg:px-16">
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            variants={stagger} className="text-center mb-6"
+          >
+            <motion.span variants={fade} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-semibold text-sm mb-4">
+              <GraduationCap className="w-4 h-4" /> Meet Our Teachers
+            </motion.span>
+            <motion.h2 variants={fade} className="text-3xl md:text-5xl font-black mb-3 tracking-tight">
+              The Faces Behind <span className="text-gradient-blue">Your Success</span>
+            </motion.h2>
+            <motion.p variants={fade} className="text-muted-foreground text-lg max-w-xl mx-auto">
+              Two dedicated educators with one mission — make every student a confident, top-scoring achiever.
+            </motion.p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-4xl mx-auto">
+            <AboutFacultyCard
+              name="Naman Bansal"
+              role="Founder & Head Teacher"
+              subject="Class 9 & 10 · Maths & Science"
+              bio="The visionary behind The Bansal Academy. Naman Sir specialises in building unshakeable fundamentals — from basic arithmetic to advanced CBSE problem-solving."
+              points={[
+                "PAQ coverage of last 5 years",
+                "Basic-to-advanced concept flow",
+                "Regular tests & case-based practice",
+                "1-on-1 doubt clearing every week",
+              ]}
+              photo={namanImg}
+              accent="blue"
+              delay={0}
+            />
+            <AboutFacultyCard
+              name="Dipesh Sir"
+              role="Commerce Expert"
+              subject="Class 11 & 12 · Commerce"
+              bio="A Commerce specialist who makes Accountancy, Economics and Business Studies genuinely easy to understand — with structured notes, real-life examples, and relentless support."
+              points={[
+                "Accountancy, Economics & BST",
+                "Concept-first, no rote learning",
+                "Personalized attention every class",
+                "Dedicated doubt-clearing sessions",
+              ]}
+              photo={dipeshImg}
+              accent="violet"
+              delay={0.15}
+            />
           </div>
         </div>
       </section>

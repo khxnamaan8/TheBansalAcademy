@@ -124,81 +124,67 @@ function FacultyCard({ name, role, subject, subjectColor, badgeColor, photo, poi
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ delay, duration: 0.7, type: "spring", bounce: 0.3 }}
-      style={{ perspective: 1200 }}
+      transition={{ delay, duration: 0.7, type: "spring", bounce: 0.25 }}
+      style={{ perspective: 1100 }}
+      className="pt-[110px]"
     >
       <motion.div
         ref={cardRef}
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         onMouseMove={handleMouse}
         onMouseLeave={handleMouseLeave}
-        whileHover={{ scale: 1.02 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className={`relative bg-white rounded-3xl border-2 border-border shadow-xl ${glowColor} hover:shadow-2xl transition-shadow duration-300 overflow-hidden cursor-default`}
+        whileHover={{ scale: 1.015 }}
+        transition={{ type: "spring", stiffness: 280, damping: 28 }}
+        className={`relative bg-white rounded-3xl border-2 border-border shadow-xl ${glowColor} hover:shadow-2xl transition-shadow duration-300 overflow-visible cursor-default`}
       >
-        {/* Top gradient band */}
-        <div className={`h-2 w-full bg-gradient-to-r ${subjectColor}`} />
-
-        <div className="p-8">
-          <div className="flex flex-col sm:flex-row gap-6 items-start">
-            {/* Photo */}
-            <motion.div
-              style={{ translateZ: 30 }}
-              className="relative flex-shrink-0"
-            >
-              <div className={`w-36 h-40 rounded-2xl overflow-hidden ring-4 ${ringColor} shadow-lg bg-gradient-to-b from-slate-50 to-slate-100 relative`}>
-                <img
-                  src={photo}
-                  alt={name}
-                  className="w-full h-full object-cover object-top"
-                />
-                {/* Floating glow behind photo */}
-                <div className={`absolute inset-0 bg-gradient-to-t ${subjectColor} opacity-10 pointer-events-none`} />
-              </div>
-              {/* Subject badge floating */}
-              <motion.div
-                animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className={`absolute -bottom-3 -right-3 px-3 py-1.5 rounded-xl text-xs font-bold border ${badgeColor} shadow-md`}
-              >
-                {accent === "blue" ? "Maths & Science" : "Commerce"}
-              </motion.div>
-            </motion.div>
-
-            {/* Info */}
-            <motion.div style={{ translateZ: 20 }} className="flex-1 min-w-0">
-              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold border ${badgeColor} mb-3`}>
-                {role}
-              </span>
-              <h3 className="text-2xl font-black text-foreground mb-1">{name}</h3>
-              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r ${subjectColor} text-white text-xs font-bold mb-5 shadow-sm`}>
-                {subject}
-              </div>
-
-              <div className="space-y-2.5">
-                {points.map((pt, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: delay + 0.1 + i * 0.06 }}
-                    className="flex items-center gap-2.5"
-                  >
-                    <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${accent === "blue" ? "text-blue-500" : "text-violet-500"}`} />
-                    <span className="text-sm text-foreground/75 font-medium">{pt}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
+        {/* Coloured top strip */}
+        <div className={`h-28 rounded-t-3xl bg-gradient-to-br ${subjectColor} relative overflow-hidden`}>
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_70%_50%,white,transparent)]" />
         </div>
 
-        {/* Decorative 3D depth element */}
+        {/* Photo — pops out above the card */}
         <motion.div
-          style={{ translateZ: 10 }}
-          className={`absolute top-4 right-4 w-16 h-16 rounded-full bg-gradient-to-br ${subjectColor} opacity-8 blur-2xl pointer-events-none`}
-        />
+          style={{ translateZ: 40 }}
+          className="absolute left-1/2 -translate-x-1/2 top-[-95px]"
+        >
+          <div className={`w-44 h-52 rounded-2xl overflow-hidden ring-4 ${ringColor} shadow-2xl bg-gradient-to-b from-slate-100 to-slate-200`}
+               style={{ filter: "drop-shadow(0 18px 36px rgba(0,0,0,0.18))" }}>
+            <img src={photo} alt={name} className="w-full h-full object-cover object-top" />
+          </div>
+          <motion.div
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className={`absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold border ${badgeColor} shadow-md`}
+          >
+            {accent === "blue" ? "Maths & Science" : "Commerce"}
+          </motion.div>
+        </motion.div>
+
+        {/* Card body */}
+        <div className="pt-16 pb-8 px-7">
+          <div className="text-center mb-5">
+            <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold border ${badgeColor} mb-2`}>{role}</span>
+            <h3 className="text-2xl font-black text-foreground">{name}</h3>
+            <div className={`inline-flex mt-2 px-3 py-1 rounded-xl bg-gradient-to-r ${subjectColor} text-white text-xs font-bold shadow-sm`}>
+              {subject}
+            </div>
+          </div>
+          <div className="border-t border-border pt-5 space-y-2.5">
+            {points.map((pt, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: delay + 0.1 + i * 0.06 }}
+                className="flex items-center gap-2.5"
+              >
+                <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${accent === "blue" ? "text-blue-500" : "text-violet-500"}`} />
+                <span className="text-sm text-foreground/75 font-medium">{pt}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );
