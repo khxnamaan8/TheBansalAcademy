@@ -17,14 +17,13 @@ interface AboutFacultyCardProps {
   name: string;
   role: string;
   subject: string;
-  bio: string;
   points: string[];
   photo: string;
   accent: "blue" | "violet";
   delay: number;
 }
 
-function AboutFacultyCard({ name, role, subject, bio, points, photo, accent, delay }: AboutFacultyCardProps) {
+function AboutFacultyCard({ name, role, subject, points, photo, accent, delay }: AboutFacultyCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -64,13 +63,13 @@ function AboutFacultyCard({ name, role, subject, bio, points, photo, accent, del
         className="relative bg-white rounded-3xl border-2 border-border shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex"
       >
         {/* Left — gradient panel with photo */}
-        <div className={`relative flex-shrink-0 w-44 bg-gradient-to-b ${gradFrom} flex items-end justify-center overflow-hidden`}>
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,white,transparent)]" />
+        <div className={`relative flex-shrink-0 w-52 bg-gradient-to-b ${gradFrom} flex items-end justify-center overflow-hidden`}>
+          <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_0%,white,transparent_60%)]" />
           <motion.img
-            style={{ translateZ: 30, height: "260px" }}
+            style={{ translateZ: 30 }}
             src={photo}
             alt={name}
-            className="relative z-10 w-full object-cover object-top"
+            className="relative z-10 w-full h-72 object-contain object-bottom"
           />
         </div>
 
@@ -80,11 +79,10 @@ function AboutFacultyCard({ name, role, subject, bio, points, photo, accent, del
             {role}
           </span>
           <h3 className="text-2xl font-black text-foreground mb-1">{name}</h3>
-          <div className={`inline-flex self-start px-3 py-1.5 rounded-xl bg-gradient-to-r ${gradFrom} text-white text-xs font-bold mb-4 shadow-sm`}>
+          <div className={`inline-flex self-start px-3 py-1.5 rounded-xl bg-gradient-to-r ${gradFrom} text-white text-xs font-bold mb-5 shadow-sm`}>
             {subject}
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed mb-5">{bio}</p>
-          <div className="border-t border-border pt-4 space-y-2.5">
+          <div className="space-y-2.5">
             {points.map((pt, i) => (
               <div key={i} className="flex items-center gap-2.5">
                 <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${checkCol}`} />
@@ -219,7 +217,6 @@ export default function About() {
               name="Naman Bansal"
               role="Founder & Head Teacher"
               subject="Class 9 & 10 · Maths & Science"
-              bio="The visionary behind The Bansal Academy. Naman Sir specialises in building unshakeable fundamentals — from basic arithmetic to advanced CBSE problem-solving."
               points={[
                 "PAQ coverage of last 5 years",
                 "Basic-to-advanced concept flow",
@@ -234,12 +231,10 @@ export default function About() {
               name="Dipesh Sir"
               role="Commerce Expert"
               subject="Class 11 & 12 · Commerce"
-              bio="A Commerce specialist who makes Accountancy, Economics and Business Studies genuinely easy to understand — with structured notes, real-life examples, and relentless support."
               points={[
                 "Accountancy, Economics & BST",
-                "Concept-first, no rote learning",
                 "Personalized attention every class",
-                "Dedicated doubt-clearing sessions",
+                "Regular tests & doubt clearing",
               ]}
               photo={dipeshImg}
               accent="violet"

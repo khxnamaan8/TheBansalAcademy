@@ -143,9 +143,9 @@ function FacultyCard({ name, role, subject, subjectColor, badgeColor, photo, poi
           <div className="flex flex-col sm:flex-row gap-6 items-start">
             {/* Photo */}
             <motion.div style={{ translateZ: 30 }} className="relative flex-shrink-0">
-              <div className={`w-36 h-40 rounded-2xl overflow-hidden ring-4 ${ringColor} shadow-lg bg-gradient-to-b from-slate-50 to-slate-100 relative`}>
-                <img src={photo} alt={name} className="w-full h-full object-cover object-top" />
-                <div className={`absolute inset-0 bg-gradient-to-t ${subjectColor} opacity-10 pointer-events-none`} />
+              <div className={`w-40 h-44 rounded-2xl overflow-hidden ring-4 ${ringColor} shadow-lg bg-gradient-to-b ${subjectColor} relative`}>
+                <img src={photo} alt={name} className="w-full h-full object-contain object-bottom" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.25),transparent_60%)] pointer-events-none" />
               </div>
               <motion.div
                 animate={{ y: [0, -5, 0] }}
